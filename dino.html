@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Dinosaur Running Toward Cursor</title>
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js"></script>
+</head>
+<body>
+<script>
+let dinoPos;
+let speed = 3;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  // start dino in center
+  dinoPos = createVector(width / 2, height / 2);
+  angleMode(DEGREES);
+}
+
+function draw() {
+  background(220);
+
+  // 1) compute direction vector toward mouse
+  let target = createVector(mouseX, mouseY);
+  let dir = p5.Vector.sub(target, dinoPos);
+  let d = dir.mag();
+
+  // 2) move if far enough
+  if (d > 1) {
+    dir.normalize().mult(speed);
+    dinoPos.add(dir);
+  }
+
+  // 3) decide facing direction
+  let facingRight = dir.x >= 0;
+
+  // 4) compute leg swing angle
+  let legAngle = sin(frameCount * 10) * 30;
+
+  // 5) draw dino at its position
+  push();
+  translate(dinoPos.x, dinoPos.y);
+  scale(facingRight ? 1 : -1, 1);  // flip horizontally if needed
+  drawDino(0, 0, legAngle);
+  pop();
+}
+
+function drawDino(x, y, legAngle) {
+  noStroke();
+  fill(100, 200, 100);
+
+  // body
+  ellipse(x, y, 100, 50);
+
+  // head
+  ellipse(x + 50, y - 20, 40, 30);
+
+  // tail
+  triangle(x - 50, y,
+           x - 80, y - 20,
+           x - 80, y + 20);
+
+  // legs (two front, two back)
+  // front-left
+  push();
+  translate(x - 20, y + 25);
+  rotate(legAngle);
+  rect(0, 0, 10, 30);
+  pop();
+
+  // front-right
+  push();
+  translate(x + 0, y + 25);
+  rotate(-legAngle);
+  rect(0, 0, 10, 30);
+  pop();
+
+  // back-left
+  push();
+  translate(x - 10, y + 25);
+  rotate(-legAngle);
+  rect(0, 0, 12, 35);
+  pop();
+
+  // back-right
+  push();
+  translate(x + 10, y + 25);
+  rotate(legAngle);
+  rect(0, 0, 12, 35);
+  pop();
+}
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+}
+</script>
+</body>
+</html>
