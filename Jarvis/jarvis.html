@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>JARVIS</title>
+<style>
+  body { margin:0; overflow:hidden; background:#000; }
+  #btn {
+    padding:14px 28px; font-size:18px; font-weight:bold;
+    border:none; border-radius:12px; cursor:pointer;
+    background: linear-gradient(90deg,#ff0000,#ff9900); color:#fff;
+    position:absolute; bottom:20px; left:50%; transform:translateX(-50%);
+    z-index:10; box-shadow:0 0 20px #ff3300;
+  }
+  canvas { display:block; }
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<button id="btn">JARVIS COME HERE</button>
+
+<script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+<script src="https://unpkg.com/gsap@3.12.2/dist/gsap.min.js"></script>
+<script>
+// Renderer
+const canvas = document.getElementById("canvas");
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true;
+
+// Scene & Camera
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
+camera.position.set(0,25,100);
+
+// Background Stars
+const starGeo = new THREE.BufferGeometry();
+const starCount = 2000;
+const starPositions = new Float32Array(starCount*3);
+for(let i=0;i<starCount;i++){
+  starPositions[i*3] = (Math.random()-0.5)*500;
+  starPositions[i*3+1] = (Math.random()-0.5)*500;
+  starPositions[i*3+2] = (Math.random()-0.5)*500;
+}
+starGeo.setAttribute("position", new THREE.BufferAttribute(starPositions,3));
+const starMat = new THREE.PointsMaterial({color:0xffffff, size:1});
+const stars = new THREE.Points(starGeo,starMat);
+scene.add(stars);
+
+// Lights
+scene.add(new THREE.HemisphereLight(0xffffff, 0x444444, 1.5));
+const spotLight = new THREE.SpotLight(0xffffff,1.5,300,Math.PI/6,0.3,1);
+spotLight.position.set(60,120,80);
+scene.add(spotLight);
+
+const rimLight = new THREE.PointLight(0xff3300,1.5,250);
+rimLight.position.set(-80,50,-80);
+scene.add(rimLight);
+
+// Materials
+const redMat   = new THREE.MeshStandardMaterial({color:0xcc0000, metalness:0.6, roughness:0.3});
+const goldMat  = new THREE.MeshStandardMaterial({color:0xffd700, metalness:0.6, roughness:0.3});
+const silverMat= new THREE.MeshStandardMaterial({color:0xb0b0b0, metalness:0.5, roughness:0.4});
+const glowBlue = new THREE.MeshStandardMaterial({color:0x33ccff, emissive:0x33ccff, emissiveIntensity:1.5});
+const thrusterMat = new THREE.MeshStandardMaterial({color:0xff6600, emissive:0xff3300, emissiveIntensity:2});
+
+// Iron Man Group
+const ironMan = new THREE.Group();
+scene.add(ironMan);
+
+// Body
+const torso = new THREE.Mesh(new THREE.BoxGeometry(9,12,5), redMat);
+ironMan.add(torso);
+
+// Arc Reactor
+const reactor = new THREE.Mesh(new THREE.CircleGeometry(2,32), glowBlue);
+reactor.position.set(0,2,2.6);
+ironMan.add(reactor);
+
+// Head
+const head = new THREE.Mesh(new THREE.BoxGeometry(4.5,5,4.5), goldMat);
+head.position.set(0,9,0); ironMan.add(head);
+
+// Eyes
+const leftEye = new THREE.Mesh(new THREE.BoxGeometry(0.8,0.4,0.1), glowBlue);
+leftEye.position.set(-1,9.5,2.3); ironMan.add(leftEye);
+const rightEye = new THREE.Mesh(new THREE.BoxGeometry(0.8,0.4,0.1), glowBlue);
+rightEye.position.set(1,9.5,2.3); ironMan.add(rightEye);
+
+// Arms
+const leftArm = new THREE.Mesh(new THREE.BoxGeometry(3,9,3), redMat);
+leftArm.position.set(-6,0,0); ironMan.add(leftArm);
+const rightArm = new THREE.Mesh(new THREE.BoxGeometry(3,9,3), redMat);
+rightArm.position.set(6,0,0); ironMan.add(rightArm);
+
+// Hands
+const leftHand = new THREE.Mesh(new THREE.BoxGeometry(2.5,2,1), silverMat);
+leftHand.position.set(-6,-6,0); ironMan.add(leftHand);
+const rightHand = new THREE.Mesh(new THREE.BoxGeometry(2.5,2,1), silverMat);
+rightHand.position.set(6,-6,0); ironMan.add(rightHand);
+
+// Legs
+const leftLeg = new THREE.Mesh(new THREE.BoxGeometry(3,11,3), redMat);
+leftLeg.position.set(-2,-11,0); ironMan.add(leftLeg);
+const rightLeg = new THREE.Mesh(new THREE.BoxGeometry(3,11,3), redMat);
+rightLeg.position.set(2,-11,0); ironMan.add(rightLeg);
+
+// Boots
+const leftBoot = new THREE.Mesh(new THREE.BoxGeometry(3.5,3,3.5), goldMat);
+leftBoot.position.set(-2,-17,0); ironMan.add(leftBoot);
+const rightBoot = new THREE.Mesh(new THREE.BoxGeometry(3.5,3,3.5), goldMat);
+rightBoot.position.set(2,-17,0); ironMan.add(rightBoot);
+
+// Thrusters
+const leftThruster = new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.5,16), thrusterMat);
+leftThruster.rotation.x=Math.PI/2;
+leftThruster.position.set(-2,-18,0); ironMan.add(leftThruster);
+const rightThruster = new THREE.Mesh(new THREE.CylinderGeometry(1,1,0.5,16), thrusterMat);
+rightThruster.rotation.x=Math.PI/2;
+rightThruster.position.set(2,-18,0); ironMan.add(rightThruster);
+
+// Leg Flames
+function createFlame(x,y,z){
+  const flameGeo = new THREE.ConeGeometry(1.5,5,16);
+  const flameMat = new THREE.MeshStandardMaterial({
+    color:0xffaa00, emissive:0xff6600, emissiveIntensity:2,
+    transparent:true, opacity:0.9
+  });
+  const flame = new THREE.Mesh(flameGeo,flameMat);
+  flame.rotation.x = -Math.PI/2;
+  flame.position.set(x,y,z);
+  return flame;
+}
+const flameL = createFlame(-2,-21,0); ironMan.add(flameL);
+const flameR = createFlame(2,-21,0); ironMan.add(flameR);
+
+// Hand Flames
+function createHandFlame(x,y,z){
+  const flameGeo = new THREE.ConeGeometry(1,3,16);
+  const flameMat = new THREE.MeshStandardMaterial({
+    color:0x33ccff, emissive:0x33ccff, emissiveIntensity:2,
+    transparent:true, opacity:0.85
+  });
+  const flame = new THREE.Mesh(flameGeo,flameMat);
+  flame.rotation.x = -Math.PI/2;
+  flame.position.set(x,y,z);
+  return flame;
+}
+const leftHandFlame = createHandFlame(-6,-6,1.5);
+ironMan.add(leftHandFlame);
+const rightHandFlame = createHandFlame(6,-6,1.5);
+ironMan.add(rightHandFlame);
+
+// Start position
+ironMan.position.set(0,120,0);
+
+// Button animation
+document.getElementById("btn").onclick = () => {
+  gsap.fromTo(ironMan.position,{y:120},{y:35,duration:3,ease:"power4.inOut"});
+  gsap.fromTo(ironMan.rotation,{y:0},{y:Math.PI*2,duration:3,ease:"power4.inOut"});
+  gsap.to(ironMan.position,{y:"+=2",duration:1,repeat:-1,yoyo:true,ease:"sine.inOut",delay:3});
+  gsap.to(ironMan.rotation,{y:"+=6.28",duration:10,repeat:-1,ease:"linear",delay:3});
+  gsap.to(reactor.scale,{x:1.2,y:1.2,duration:0.6,repeat:-1,yoyo:true,ease:"sine.inOut",delay:3});
+};
+
+// Animate loop
+function animate(){
+  requestAnimationFrame(animate);
+  stars.rotation.y += 0.0005;
+
+  // Leg flames pulse
+  flameL.scale.y = 0.8+Math.sin(Date.now()*0.01)*0.3;
+  flameR.scale.y = 0.8+Math.cos(Date.now()*0.01)*0.3;
+
+  // Hand flames pulse
+  leftHandFlame.scale.y = 0.7 + Math.sin(Date.now()*0.02)*0.25;
+  rightHandFlame.scale.y = 0.7 + Math.cos(Date.now()*0.02)*0.25;
+
+  renderer.render(scene,camera);
+}
+animate();
+
+// Responsive
+window.addEventListener("resize",()=>{
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.updateProjectionMatrix();
+});
+</script>
+</body>
+</html>
