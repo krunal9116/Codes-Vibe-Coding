@@ -1,97 +1,1226 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <title>Dinosaur Running Toward Cursor</title>
-  <script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js"></script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dino Chase – Choose Your Dinosaur</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    :root {
+      --bg: #0a0a1a;
+      --font: 'Outfit', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      overflow: hidden;
+      font-family: var(--font);
+      color: #fff;
+    }
+
+    /* ====== SELECTION SCREEN ====== */
+    .screen { position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
+      z-index:200; transition: opacity .6s ease, transform .6s ease; }
+    .screen.hidden { opacity:0; pointer-events:none; transform:scale(.9) rotateX(5deg); }
+
+    #selectScreen {
+      background:
+        radial-gradient(circle at 20% 80%, rgba(74,222,128,.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(248,113,113,.06) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(192,132,252,.05) 0%, transparent 60%),
+        linear-gradient(180deg, #060d08 0%, #0c1a10 40%, #0a0f14 100%);
+      flex-direction:column; gap:1.8rem; perspective:800px;
+    }
+
+    /* Animated fog layer */
+    #selectScreen::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+      opacity:.5;
+    }
+
+    .select-title {
+      font-size:3rem; font-weight:800; text-align:center; position:relative; z-index:1;
+      color: #e8e4d9; text-shadow: 0 0 40px rgba(74,222,128,.3), 0 2px 0 rgba(0,0,0,.5);
+      letter-spacing:.06em; text-transform:uppercase;
+    }
+    .select-title::after {
+      content:''; display:block; width:80px; height:3px; margin:.6rem auto 0;
+      background: linear-gradient(90deg, transparent, #4ade80, transparent);
+      border-radius:2px;
+    }
+    .select-subtitle {
+      color:rgba(255,255,255,.3); font-size:.95rem; font-weight:300; text-align:center;
+      letter-spacing:.12em; text-transform:uppercase; position:relative; z-index:1;
+    }
+
+    .dino-cards {
+      display:grid; grid-template-columns: repeat(2, 1fr); gap:1rem; padding:0 1rem;
+      max-width:520px; width:100%; position:relative; z-index:1;
+    }
+
+    .dino-card {
+      position:relative; text-align:center; cursor:pointer; padding:2rem 1.2rem 1.6rem;
+      border-radius:18px; font-family:var(--font); transition: transform .4s cubic-bezier(.2,.9,.3,1.2), box-shadow .4s;
+      background: rgba(255,255,255,.03); border: none; overflow:hidden;
+    }
+    /* Animated gradient border via pseudo-element */
+    .dino-card::before {
+      content:''; position:absolute; inset:-2px; border-radius:20px; z-index:-1;
+      background: conic-gradient(from var(--angle, 0deg), var(--card), transparent 40%, var(--card));
+      opacity:.25; transition:opacity .4s;
+      animation: rotateBorder 4s linear infinite;
+    }
+    .dino-card::after {
+      content:''; position:absolute; inset:0; border-radius:18px; z-index:-1;
+      background: linear-gradient(160deg, rgba(255,255,255,.04), rgba(0,0,0,.3));
+    }
+    @keyframes rotateBorder { to { --angle: 360deg; } }
+    @property --angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+    .dino-card:hover {
+      transform: scale(1.06) rotateY(-3deg) rotateX(2deg);
+      box-shadow: 0 16px 50px rgba(0,0,0,.5), 0 0 30px color-mix(in srgb, var(--card) 30%, transparent);
+    }
+    .dino-card:hover::before { opacity:.7; }
+
+    /* Card color themes */
+    .dino-card.herbivore { --card:#4ade80; }
+    .dino-card.trex { --card:#f87171; }
+    .dino-card.triceratops { --card:#60a5fa; }
+    .dino-card.pterodactyl { --card:#c084fc; }
+
+    .card-emoji {
+      font-size:3rem; margin-bottom:.5rem; display:block;
+      filter: drop-shadow(0 0 12px color-mix(in srgb, var(--card) 40%, transparent));
+      animation: dinoBreath 2.5s ease-in-out infinite;
+    }
+    @keyframes dinoBreath {
+      0%,100% { transform:scale(1) rotate(0); }
+      30% { transform:scale(1.12) rotate(-3deg); }
+      60% { transform:scale(1.05) rotate(2deg); }
+    }
+    .dino-card:nth-child(2) .card-emoji { animation-delay:.6s; }
+    .dino-card:nth-child(3) .card-emoji { animation-delay:1.2s; }
+    .dino-card:nth-child(4) .card-emoji { animation-delay:1.8s; }
+
+    .card-name {
+      font-size:1.15rem; font-weight:700; color: var(--card); margin-bottom:.25rem;
+      text-shadow: 0 0 15px color-mix(in srgb, var(--card) 35%, transparent);
+    }
+    .card-trait { font-size:.72rem; color:rgba(255,255,255,.3); line-height:1.4; }
+    .card-action {
+      display:inline-block; font-size:.65rem; color:#fff; margin-top:.7rem;
+      font-weight:600; text-transform:uppercase; letter-spacing:.06em;
+      background: color-mix(in srgb, var(--card) 20%, transparent);
+      padding:.3rem .7rem; border-radius:8px; opacity:.7;
+      transition: opacity .3s, background .3s;
+    }
+    .dino-card:hover .card-action { opacity:1; background: color-mix(in srgb, var(--card) 35%, transparent); }
+
+    @media (max-width: 500px) {
+      .dino-cards { grid-template-columns: repeat(2, 1fr); gap:.7rem; max-width:360px; }
+      .dino-card { padding:1.4rem .8rem 1.2rem; }
+      .card-emoji { font-size:2.4rem; }
+      .select-title { font-size:2rem; }
+    }
+
+    /* ====== GAME CANVAS ====== */
+    canvas { display:block; }
+    body.in-game { cursor:none; }
+
+    .custom-cursor {
+      position:fixed; width:22px; height:22px; border-radius:50%;
+      pointer-events:none; z-index:500; transform:translate(-50%,-50%);
+      transition: width .25s, height .25s, opacity .3s, box-shadow .3s;
+      display:none;
+    }
+    body.in-game .custom-cursor { display:block; }
+
+    /* ====== HUD ====== */
+    .hud {
+      position:fixed; top:0; left:0; right:0; padding:1.1rem 1.8rem;
+      display:flex; justify-content:space-between; align-items:center;
+      z-index:100; pointer-events:none; display:none;
+    }
+    body.in-game .hud { display:flex; }
+
+    .hud-left { display:flex; align-items:center; gap:.8rem; }
+    .btn-back {
+      pointer-events:all; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+      color:rgba(255,255,255,.6); padding:.45rem .9rem; border-radius:10px; cursor:pointer;
+      font-family:var(--font); font-size:.85rem; transition:all .3s; display:flex; align-items:center; gap:.3rem;
+    }
+    .btn-back:hover { color:#fff; border-color:rgba(255,255,255,.3); background:rgba(255,255,255,.1); }
+    .hud-dino-name { font-size:1.15rem; font-weight:700; }
+
+    .hud-stats { display:flex; gap:1.3rem; }
+    .stat { text-align:center; }
+    .stat-label { font-size:.6rem; font-weight:600; text-transform:uppercase; letter-spacing:.08em; color:rgba(255,255,255,.3); margin-bottom:.1rem; }
+    .stat-value { font-size:1.05rem; font-weight:800; }
+
+    /* ====== CATCH OVERLAY ====== */
+    .catch-overlay {
+      position:fixed; inset:0; z-index:300; display:flex; align-items:center; justify-content:center;
+      background:rgba(0,0,0,.7); backdrop-filter:blur(6px);
+      opacity:0; pointer-events:none; transition:opacity .4s;
+    }
+    .catch-overlay.show { opacity:1; pointer-events:all; }
+    .catch-card {
+      background:rgba(20,20,30,.95); border-radius:24px; padding:2.5rem 3rem;
+      text-align:center; transform:scale(.8); transition:transform .5s cubic-bezier(.175,.885,.32,1.275);
+      border:1px solid rgba(255,255,255,.08); box-shadow:0 24px 80px rgba(0,0,0,.5); max-width:380px; width:90%;
+    }
+    .catch-overlay.show .catch-card { transform:scale(1); }
+    .catch-emoji { font-size:4rem; margin-bottom:.5rem; animation:bounceIn .6s cubic-bezier(.175,.885,.32,1.275) .2s both; }
+    @keyframes bounceIn { 0%{transform:scale(0)} 60%{transform:scale(1.3)} 100%{transform:scale(1)} }
+    .catch-title { font-size:1.6rem; font-weight:800; margin-bottom:.4rem; }
+    .catch-sub { color:rgba(255,255,255,.5); font-size:.9rem; margin-bottom:1.5rem; }
+    .btn-continue {
+      display:block; width:100%; padding:.75rem; border:none; border-radius:12px;
+      font-family:var(--font); font-size:.95rem; font-weight:700; cursor:pointer;
+      color:#fff; transition:all .3s; margin-bottom:.6rem;
+    }
+    .btn-continue:hover { transform:translateY(-2px); }
+
+    /* ====== VIGNETTE ====== */
+    .vignette { position:fixed; inset:0; pointer-events:none; z-index:90; display:none; }
+    body.in-game .vignette { display:block; }
+
+    /* ====== SCREEN SHAKE ====== */
+    @keyframes screenShake {
+      0%,100% { transform:translate(0,0) rotate(0); }
+      10% { transform:translate(-4px,2px) rotate(-0.5deg); }
+      30% { transform:translate(4px,-2px) rotate(0.5deg); }
+      50% { transform:translate(-3px,3px) rotate(-0.3deg); }
+      70% { transform:translate(3px,-1px) rotate(0.3deg); }
+      90% { transform:translate(-2px,1px) rotate(-0.2deg); }
+    }
+    .shake canvas { animation: screenShake .5s ease; }
+  </style>
 </head>
 <body>
-<script>
-let dinoPos;
-let speed = 3;
 
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-  // start dino in center
-  dinoPos = createVector(width / 2, height / 2);
-  angleMode(DEGREES);
+<!-- Custom cursor (themed per dino) -->
+<div class="custom-cursor" id="cursor"></div>
+
+<!-- ====== SELECTION SCREEN ====== -->
+<div class="screen" id="selectScreen">
+  <div class="select-title">🦕 Choose Your Dinosaur</div>
+  <p class="select-subtitle">Each one has a unique personality & habitat</p>
+  <div class="dino-cards">
+    <div class="dino-card herbivore" onclick="selectDino('herbivore')">
+      <div class="card-emoji">🦕</div>
+      <div class="card-name">Herbivore</div>
+      <div class="card-trait">Peaceful • Gentle • Friendly</div>
+      <div class="card-action">Will nuzzle you 💚</div>
+    </div>
+    <div class="dino-card trex" onclick="selectDino('trex')">
+      <div class="card-emoji">🦖</div>
+      <div class="card-name">T-Rex</div>
+      <div class="card-trait">Fierce • Fast • Deadly</div>
+      <div class="card-action">Will devour you 🩸</div>
+    </div>
+    <div class="dino-card triceratops" onclick="selectDino('triceratops')">
+      <div class="card-emoji">🛡️</div>
+      <div class="card-name">Triceratops</div>
+      <div class="card-trait">Sturdy • Brave • Chill</div>
+      <div class="card-action">Will headbutt you 💥</div>
+    </div>
+    <div class="dino-card pterodactyl" onclick="selectDino('pterodactyl')">
+      <div class="card-emoji">🦅</div>
+      <div class="card-name">Pterodactyl</div>
+      <div class="card-trait">Swift • Graceful • Aerial</div>
+      <div class="card-action">Will snatch you 🌪️</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====== HUD ====== -->
+<div class="hud" id="hud">
+  <div class="hud-left">
+    <button class="btn-back" onclick="goBack()">← Back</button>
+    <span class="hud-dino-name" id="hudName">Herbivore</span>
+  </div>
+  <div class="hud-stats">
+    <div class="stat"><div class="stat-label">Speed</div><div class="stat-value" id="speedStat">3.0</div></div>
+    <div class="stat"><div class="stat-label">Distance</div><div class="stat-value" id="distStat">0</div></div>
+    <div class="stat"><div class="stat-label">Catches</div><div class="stat-value" id="catchStat">0</div></div>
+  </div>
+</div>
+
+<div class="vignette" id="vignette"></div>
+
+<!-- Catch overlay -->
+<div class="catch-overlay" id="catchOverlay">
+  <div class="catch-card">
+    <div class="catch-emoji" id="catchEmoji">😱</div>
+    <div class="catch-title" id="catchTitle">Caught!</div>
+    <div class="catch-sub" id="catchSub">The dino got you!</div>
+    <button class="btn-continue" id="btnContinue" onclick="dismissCatch()">Keep Running!</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/p5@1.4.2/lib/p5.js"></script>
+<script>
+// =============== DINO PROFILES ===============
+const DINOS = {
+  herbivore: {
+    name: 'Herbivore',
+    bodyColor: [45, 180, 80],
+    accentColor: [74, 222, 128],
+    darkColor: [34, 130, 60],
+    bellyColor: [80, 210, 120],
+    spikeColor: [34, 160, 70],
+    speed: 3,
+    bgTheme: 'forest',
+    cursorColor: 'rgba(74,222,128,.7)',
+    cursorGlow: '0 0 15px rgba(74,222,128,.5), inset 0 0 8px rgba(74,222,128,.3)',
+    cursorBorder: '2px solid #4ade80',
+    hudAccent: '#4ade80',
+    catchEmoji: '🥰',
+    catchTitle: 'Nuzzle!',
+    catchSub: 'The herbivore nuzzled you gently! So cute!',
+    catchBtnColor: 'linear-gradient(135deg, #4ade80, #22c55e)',
+    vignetteColor: 'radial-gradient(ellipse at center, transparent 50%, rgba(0,30,10,.6) 100%)',
+    catchShake: false,
+  },
+  trex: {
+    name: 'T-Rex',
+    bodyColor: [180, 50, 40],
+    accentColor: [248, 113, 113],
+    darkColor: [120, 30, 25],
+    bellyColor: [200, 80, 60],
+    spikeColor: [140, 40, 30],
+    speed: 4.5,
+    bgTheme: 'volcano',
+    cursorColor: 'rgba(248,113,113,.7)',
+    cursorGlow: '0 0 15px rgba(248,113,113,.5), inset 0 0 8px rgba(248,113,113,.3)',
+    cursorBorder: '2px solid #f87171',
+    hudAccent: '#f87171',
+    catchEmoji: '🩸',
+    catchTitle: 'DEVOURED!',
+    catchSub: 'The T-Rex chomped your cursor! Brutal!',
+    catchBtnColor: 'linear-gradient(135deg, #f87171, #dc2626)',
+    vignetteColor: 'radial-gradient(ellipse at center, transparent 40%, rgba(60,0,0,.7) 100%)',
+    catchShake: true,
+  },
+  triceratops: {
+    name: 'Triceratops',
+    bodyColor: [50, 110, 180],
+    accentColor: [96, 165, 250],
+    darkColor: [30, 70, 130],
+    bellyColor: [80, 140, 210],
+    spikeColor: [40, 90, 160],
+    speed: 2.5,
+    bgTheme: 'plains',
+    cursorColor: 'rgba(96,165,250,.7)',
+    cursorGlow: '0 0 15px rgba(96,165,250,.5), inset 0 0 8px rgba(96,165,250,.3)',
+    cursorBorder: '2px solid #60a5fa',
+    hudAccent: '#60a5fa',
+    catchEmoji: '💥',
+    catchTitle: 'HEADBUTT!',
+    catchSub: 'The Triceratops rammed you with its horns!',
+    catchBtnColor: 'linear-gradient(135deg, #60a5fa, #3b82f6)',
+    vignetteColor: 'radial-gradient(ellipse at center, transparent 50%, rgba(10,20,50,.6) 100%)',
+    catchShake: true,
+  },
+  pterodactyl: {
+    name: 'Pterodactyl',
+    bodyColor: [140, 80, 190],
+    accentColor: [192, 132, 252],
+    darkColor: [100, 50, 150],
+    bellyColor: [170, 120, 220],
+    spikeColor: [120, 60, 170],
+    speed: 5.5,
+    bgTheme: 'sky',
+    cursorColor: 'rgba(192,132,252,.7)',
+    cursorGlow: '0 0 15px rgba(192,132,252,.5), inset 0 0 8px rgba(192,132,252,.3)',
+    cursorBorder: '2px solid #c084fc',
+    hudAccent: '#c084fc',
+    catchEmoji: '🌪️',
+    catchTitle: 'SNATCHED!',
+    catchSub: 'The Pterodactyl swooped and grabbed you!',
+    catchBtnColor: 'linear-gradient(135deg, #c084fc, #a855f7)',
+    vignetteColor: 'radial-gradient(ellipse at center, transparent 50%, rgba(30,10,50,.6) 100%)',
+    catchShake: false,
+  },
+};
+
+// =============== STATE ===============
+let currentDino = null;
+let dinoPos, dinoVel;
+let totalDist = 0;
+let catches = 0;
+let trail = [];
+let dustParticles = [];
+let stars = [];
+let catchCooldown = 0;
+let isCaught = false;
+let catchAnimTimer = 0;
+
+// Eating animation state
+let isEating = false;
+let eatTimer = 0;
+const EAT_DURATION = 90; // ~1.5 seconds at 60fps
+let eatParticles = [];
+let catchPos = null;
+let chompFrame = 0;
+
+// Volcano-specific
+let lavaParticles = [];
+// Sky-specific
+let clouds = [];
+
+const cursorEl = document.getElementById('cursor');
+const selectScreen = document.getElementById('selectScreen');
+const vignette = document.getElementById('vignette');
+const catchOverlay = document.getElementById('catchOverlay');
+
+// =============== SELECTION ===============
+function selectDino(type) {
+  currentDino = DINOS[type];
+  catches = 0;
+  totalDist = 0;
+  document.getElementById('catchStat').textContent = '0';
+
+  // Apply theme
+  cursorEl.style.border = currentDino.cursorBorder;
+  cursorEl.style.boxShadow = currentDino.cursorGlow;
+  cursorEl.style.background = 'transparent';
+  vignette.style.background = currentDino.vignetteColor;
+  document.getElementById('hudName').textContent = currentDino.name;
+  document.getElementById('hudName').style.color = currentDino.hudAccent;
+  document.getElementById('speedStat').style.color = currentDino.hudAccent;
+  document.getElementById('distStat').style.color = currentDino.hudAccent;
+  document.getElementById('catchStat').style.color = currentDino.hudAccent;
+
+  // Transition
+  selectScreen.classList.add('hidden');
+  document.body.classList.add('in-game');
+
+  // Reset game state
+  if (typeof width !== 'undefined') {
+    dinoPos = createVector(width / 2, height / 2);
+  }
+  dinoVel = createVector(0, 0);
+  trail = [];
+  dustParticles = [];
+  lavaParticles = [];
+  catchCooldown = 0;
+  isCaught = false;
+
+  // Generate environment
+  generateEnvironment();
 }
 
-function draw() {
-  background(220);
+function goBack() {
+  document.body.classList.remove('in-game');
+  selectScreen.classList.remove('hidden');
+  catchOverlay.classList.remove('show');
+  isCaught = false;
+  isEating = false;
+  eatParticles = [];
+  cursorEl.style.opacity = '1';
+}
 
-  // 1) compute direction vector toward mouse
+function generateEnvironment() {
+  stars = [];
+  clouds = [];
+  let theme = currentDino.bgTheme;
+
+  if (theme === 'forest' || theme === 'volcano' || theme === 'plains') {
+    let count = theme === 'volcano' ? 100 : 200;
+    for (let i = 0; i < count; i++) {
+      stars.push({ x: random(width), y: random(height), size: random(1, 3),
+        twinkleSpeed: random(.02, .06), phase: random(TWO_PI) });
+    }
+  }
+
+  if (theme === 'volcano') {
+    for (let i = 0; i < 20; i++) {
+      lavaParticles.push({ x: random(width), y: height + random(50),
+        vy: -random(.3, 1), size: random(3, 8), alpha: random(100, 200),
+        color: random() > .5 ? [255, 100, 30] : [255, 60, 10] });
+    }
+  }
+
+  if (theme === 'sky') {
+    for (let i = 0; i < 12; i++) {
+      clouds.push({ x: random(width), y: random(height * .7), w: random(120, 250),
+        h: random(40, 80), speed: random(.2, .6), alpha: random(15, 35) });
+    }
+  }
+}
+
+// =============== P5 SETUP ===============
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  dinoPos = createVector(width / 2, height / 2);
+  dinoVel = createVector(0, 0);
+  angleMode(DEGREES);
+  noCursor();
+}
+
+// =============== P5 DRAW ===============
+function draw() {
+  if (!currentDino) return;
+
+  drawBackground();
+
+  // Custom cursor
+  cursorEl.style.left = mouseX + 'px';
+  cursorEl.style.top = mouseY + 'px';
+
+  // Movement
   let target = createVector(mouseX, mouseY);
   let dir = p5.Vector.sub(target, dinoPos);
   let d = dir.mag();
+  let baseSpeed = currentDino.speed;
+  let speed = map(d, 0, 400, baseSpeed * .6, baseSpeed * 2.5, true);
+  document.getElementById('speedStat').textContent = speed.toFixed(1);
 
-  // 2) move if far enough
-  if (d > 1) {
-    dir.normalize().mult(speed);
-    dinoPos.add(dir);
+  if (catchCooldown > 0) catchCooldown--;
+
+  if (!isEating && !isCaught && d > 5) {
+    let moveDir = dir.copy().normalize().mult(speed);
+    dinoVel.lerp(moveDir, 0.12);
+    dinoPos.add(dinoVel);
+    totalDist += dinoVel.mag();
+
+    if (frameCount % 3 === 0) spawnDust(dinoPos.x, dinoPos.y + 22, dinoVel);
+  } else if (!isEating) {
+    dinoVel.mult(0.9);
   }
 
-  // 3) decide facing direction
+  // During eating - dino keeps moving slowly
+  if (isEating) {
+    dinoVel.lerp(createVector(random(-1,1), random(-.5,.5)), 0.05);
+    dinoPos.add(dinoVel);
+  }
+
+  // Trail
+  if (frameCount % 2 === 0) {
+    trail.push({ x: dinoPos.x, y: dinoPos.y, alpha: 255 });
+    if (trail.length > 35) trail.shift();
+  }
+
+  document.getElementById('distStat').textContent = Math.floor(totalDist / 10);
+
+  // CHECK CATCH
+  if (d < 30 && catchCooldown <= 0 && !isCaught && !isEating) {
+    triggerCatch();
+  }
+
+  drawTrail();
+  updateDust();
+  drawTargetIndicator(target);
+
+  // Draw dino
   let facingRight = dir.x >= 0;
+  let legAngle = sin(frameCount * 8) * 35 * min(dinoVel.mag() / 3, 1);
+  let bobY = sin(frameCount * 6) * 2 * min(dinoVel.mag() / 3, 1);
 
-  // 4) compute leg swing angle
-  let legAngle = sin(frameCount * 10) * 30;
-
-  // 5) draw dino at its position
   push();
-  translate(dinoPos.x, dinoPos.y);
-  scale(facingRight ? 1 : -1, 1);  // flip horizontally if needed
-  drawDino(0, 0, legAngle);
+  translate(dinoPos.x, dinoPos.y + bobY);
+  scale(facingRight ? 1 : -1, 1);
+
+  if (currentDino.bgTheme === 'sky') {
+    drawPterodactyl(0, 0, d);
+  } else if (currentDino.bgTheme === 'plains') {
+    drawTriceratops(0, 0, legAngle, d);
+  } else {
+    drawGenericDino(0, 0, legAngle, d);
+  }
   pop();
+
+  // ===== EATING ANIMATION PHASE =====
+  if (isEating) {
+    eatTimer--;
+    chompFrame++;
+
+    // Hide cursor during eating
+    cursorEl.style.opacity = '0';
+
+    // Spawn themed particles at catch position
+    if (eatTimer > 30 && frameCount % 2 === 0) {
+      spawnEatParticles();
+    }
+
+    // Draw eat particles
+    drawEatParticles();
+
+    // Screen tint flash at start
+    if (eatTimer > EAT_DURATION - 15) {
+      let ac = currentDino.accentColor;
+      let intensity = map(eatTimer, EAT_DURATION - 15, EAT_DURATION, 80, 0);
+      fill(ac[0], ac[1], ac[2], intensity);
+      noStroke();
+      rect(0, 0, width, height);
+    }
+
+    // When eating ends, show popup
+    if (eatTimer <= 0) {
+      isEating = false;
+      showCatchPopup();
+    }
+  }
+
+  if (isCaught) {
+    catchAnimTimer--;
+    if (catchAnimTimer <= 0) isCaught = false;
+  }
 }
 
-function drawDino(x, y, legAngle) {
+// =============== EATING PARTICLES ===============
+function spawnEatParticles() {
+  let px = catchPos ? catchPos.x : dinoPos.x + 50;
+  let py = catchPos ? catchPos.y : dinoPos.y - 10;
+  let theme = currentDino.bgTheme;
+
+  for (let i = 0; i < 3; i++) {
+    let p = { x: px + random(-10, 10), y: py + random(-10, 10),
+      vx: random(-3, 3), vy: random(-4, -1), size: random(4, 10),
+      alpha: 255, rotation: random(360), rotSpeed: random(-8, 8) };
+
+    if (theme === 'volcano') {
+      // Blood drops for T-Rex
+      p.color = random() > .3 ? [220, 30, 30] : [180, 10, 10];
+      p.shape = 'blood';
+      p.vy = random(-5, -1);
+      p.size = random(5, 12);
+    } else if (theme === 'forest') {
+      // Hearts for Herbivore
+      p.color = [255, 120, 160];
+      p.shape = 'heart';
+      p.vy = random(-3, -1);
+      p.size = random(8, 14);
+    } else if (theme === 'plains') {
+      // Sparks for Triceratops
+      p.color = random() > .5 ? [255, 220, 80] : [255, 180, 50];
+      p.shape = 'spark';
+      p.vx = random(-5, 5);
+      p.vy = random(-5, 1);
+      p.size = random(3, 7);
+    } else {
+      // Wind swirls for Pterodactyl
+      p.color = [200, 180, 255];
+      p.shape = 'swirl';
+      p.vx = random(-4, 4);
+      p.vy = random(-3, 2);
+      p.size = random(6, 14);
+    }
+    eatParticles.push(p);
+  }
+}
+
+function drawEatParticles() {
+  for (let p of eatParticles) {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.08;
+    p.alpha -= 3.5;
+    p.rotation += p.rotSpeed;
+
+    if (p.alpha <= 0) continue;
+
+    push();
+    translate(p.x, p.y);
+    rotate(p.rotation);
+    noStroke();
+
+    if (p.shape === 'blood') {
+      // Blood droplet
+      fill(p.color[0], p.color[1], p.color[2], p.alpha);
+      ellipse(0, 0, p.size, p.size * 1.3);
+      // Smaller splatter
+      fill(p.color[0], p.color[1], p.color[2], p.alpha * .6);
+      ellipse(p.size * .5, p.size * .3, p.size * .4, p.size * .4);
+    } else if (p.shape === 'heart') {
+      // Simple heart shape
+      fill(p.color[0], p.color[1], p.color[2], p.alpha);
+      let hs = p.size / 2;
+      beginShape();
+      vertex(0, hs * .6);
+      bezierVertex(-hs, -hs * .3, -hs * .5, -hs, 0, -hs * .4);
+      bezierVertex(hs * .5, -hs, hs, -hs * .3, 0, hs * .6);
+      endShape(CLOSE);
+    } else if (p.shape === 'spark') {
+      // Star spark
+      fill(p.color[0], p.color[1], p.color[2], p.alpha);
+      let ss = p.size;
+      beginShape();
+      for (let a = 0; a < 360; a += 72) {
+        let r1 = ss, r2 = ss * .4;
+        vertex(cos(a) * r1, sin(a) * r1);
+        vertex(cos(a + 36) * r2, sin(a + 36) * r2);
+      }
+      endShape(CLOSE);
+    } else {
+      // Swirl / wind
+      noFill();
+      stroke(p.color[0], p.color[1], p.color[2], p.alpha);
+      strokeWeight(1.5);
+      arc(0, 0, p.size, p.size, 0, 270);
+    }
+    pop();
+  }
+  eatParticles = eatParticles.filter(p => p.alpha > 0);
+}
+
+// =============== CATCH LOGIC ===============
+function triggerCatch() {
+  catches++;
+  catchCooldown = 180; // 3 seconds cooldown
+  isCaught = true;
+  catchAnimTimer = 30;
+
+  // Start eating animation
+  isEating = true;
+  eatTimer = EAT_DURATION;
+  chompFrame = 0;
+  eatParticles = [];
+  catchPos = createVector(dinoPos.x + 50, dinoPos.y - 10);
+
+  document.getElementById('catchStat').textContent = catches;
+
+  // Shake for aggressive dinos
+  if (currentDino.catchShake) {
+    document.body.classList.add('shake');
+    setTimeout(() => document.body.classList.remove('shake'), 500);
+  }
+}
+
+function showCatchPopup() {
+  // Show overlay after eating finishes
+  document.getElementById('catchEmoji').textContent = currentDino.catchEmoji;
+  document.getElementById('catchTitle').textContent = currentDino.catchTitle;
+  document.getElementById('catchTitle').style.color = currentDino.hudAccent;
+  document.getElementById('catchSub').textContent = currentDino.catchSub;
+  document.getElementById('btnContinue').style.background = currentDino.catchBtnColor;
+  catchOverlay.classList.add('show');
+
+  // Restore cursor
+  cursorEl.style.opacity = '1';
+}
+
+function dismissCatch() {
+  catchOverlay.classList.remove('show');
+  isEating = false;
+  eatParticles = [];
+  cursorEl.style.opacity = '1';
+  // Teleport dino away so player has time to run
+  dinoPos = createVector(width / 2, height / 2);
+}
+
+// =============== BACKGROUNDS ===============
+function drawBackground() {
+  let theme = currentDino.bgTheme;
+
+  if (theme === 'forest') {
+    background(8, 18, 12);
+    drawStars();
+    drawGrid(20, 120, 50, 6);
+    drawGround([20, 60, 30], [15, 45, 20]);
+    drawTrees();
+  } else if (theme === 'volcano') {
+    background(20, 8, 5);
+    drawStars();
+    drawLava();
+    drawGround([60, 20, 10], [40, 15, 8]);
+    drawVolcanoGlow();
+  } else if (theme === 'plains') {
+    background(10, 14, 28);
+    drawStars();
+    drawGrid(30, 80, 140, 5);
+    drawGround([25, 40, 20], [18, 30, 15]);
+    drawGrass();
+  } else if (theme === 'sky') {
+    // Sky gradient
+    for (let y = 0; y < height; y++) {
+      let inter = map(y, 0, height, 0, 1);
+      let c1r = lerp(15, 30, inter), c1g = lerp(10, 15, inter), c1b = lerp(45, 55, inter);
+      stroke(c1r, c1g, c1b);
+      line(0, y, width, y);
+    }
+    noStroke();
+    drawClouds();
+    drawStars();
+  }
+}
+
+function drawStars() {
   noStroke();
-  fill(100, 200, 100);
+  for (let s of stars) {
+    let alpha = map(sin(frameCount * s.twinkleSpeed + s.phase), -1, 1, 30, 120);
+    fill(255, 255, 255, alpha);
+    ellipse(s.x, s.y, s.size);
+  }
+}
 
-  // body
-  ellipse(x, y, 100, 50);
+function drawGrid(r, g, b, a) {
+  stroke(r, g, b, a);
+  strokeWeight(0.5);
+  for (let x = 0; x < width; x += 60) line(x, 0, x, height);
+  for (let y = 0; y < height; y += 60) line(0, y, width, y);
+}
 
-  // head
-  ellipse(x + 50, y - 20, 40, 30);
+function drawGround(c1, c2) {
+  noStroke();
+  let groundY = height * .82;
+  fill(c1[0], c1[1], c1[2]);
+  rect(0, groundY, width, height - groundY);
+  fill(c2[0], c2[1], c2[2]);
+  rect(0, groundY, width, 3);
+}
 
-  // tail
-  triangle(x - 50, y,
-           x - 80, y - 20,
-           x - 80, y + 20);
+function drawTrees() {
+  let groundY = height * .82;
+  noStroke();
+  for (let i = 0; i < 8; i++) {
+    let tx = (i * width / 7) + sin(i * 50) * 30;
+    let th = 40 + i * 8;
+    // Trunk
+    fill(40, 25, 15, 60);
+    rect(tx - 4, groundY - th, 8, th);
+    // Canopy
+    fill(20, 70 + i * 5, 30, 50);
+    ellipse(tx, groundY - th - 10, 40 + i * 3, 30 + i * 2);
+  }
+}
 
-  // legs (two front, two back)
-  // front-left
+function drawLava() {
+  noStroke();
+  for (let p of lavaParticles) {
+    p.y += p.vy;
+    p.alpha -= 0.3;
+    if (p.y < -10 || p.alpha < 0) {
+      p.y = height + random(20);
+      p.x = random(width);
+      p.alpha = random(100, 200);
+    }
+    fill(p.color[0], p.color[1], p.color[2], p.alpha);
+    ellipse(p.x, p.y, p.size);
+  }
+  // Ground lava glow
+  let groundY = height * .82;
+  for (let i = 0; i < 6; i++) {
+    let gx = (i * width / 5) + sin(frameCount * .02 + i) * 30;
+    let pulse = sin(frameCount * .05 + i * 40) * 20;
+    fill(255, 60, 10, 25 + pulse);
+    ellipse(gx, groundY + 20, 80, 30);
+  }
+}
+
+function drawVolcanoGlow() {
+  let pulse = sin(frameCount * 0.03) * 10;
+  noStroke();
+  fill(255, 40, 10, 8 + pulse);
+  ellipse(width * .8, height * .15, 200, 200);
+}
+
+function drawClouds() {
+  noStroke();
+  for (let c of clouds) {
+    c.x -= c.speed;
+    if (c.x < -c.w) c.x = width + c.w;
+    fill(255, 255, 255, c.alpha);
+    ellipse(c.x, c.y, c.w, c.h);
+    ellipse(c.x - c.w * .25, c.y + 10, c.w * .6, c.h * .7);
+    ellipse(c.x + c.w * .2, c.y + 8, c.w * .5, c.h * .6);
+  }
+}
+
+function drawGrass() {
+  let groundY = height * .82;
+  stroke(40, 90, 30, 40);
+  strokeWeight(1.5);
+  for (let i = 0; i < 40; i++) {
+    let gx = (i * width / 39) + sin(i * 30) * 10;
+    let sway = sin(frameCount * .03 + i) * 5;
+    line(gx, groundY, gx + sway, groundY - random(8, 18));
+  }
+}
+
+// =============== TRAIL & PARTICLES ===============
+function drawTrail() {
+  noStroke();
+  let ac = currentDino.accentColor;
+  for (let i = 0; i < trail.length; i++) {
+    let t = trail[i];
+    t.alpha -= 7;
+    if (t.alpha > 0) {
+      let sz = map(i, 0, trail.length, 3, 14);
+      fill(ac[0], ac[1], ac[2], t.alpha * .3);
+      ellipse(t.x, t.y, sz + 8);
+      fill(ac[0], ac[1], ac[2], t.alpha * .6);
+      ellipse(t.x, t.y, sz);
+    }
+  }
+  trail = trail.filter(t => t.alpha > 0);
+}
+
+function spawnDust(x, y, vel) {
+  let ac = currentDino.accentColor;
+  let dc = currentDino.darkColor;
+  for (let i = 0; i < 2; i++) {
+    dustParticles.push({
+      x: x + random(-5, 5), y: y + random(-2, 5),
+      vx: -vel.x * .08 + random(-1, 1), vy: random(-2, -.5),
+      size: random(3, 6), alpha: 180,
+      color: random() > .5 ? ac : dc
+    });
+  }
+}
+
+function updateDust() {
+  noStroke();
+  for (let p of dustParticles) {
+    p.x += p.vx; p.y += p.vy; p.vy += .05; p.alpha -= 4; p.size *= .98;
+    if (p.alpha > 0) {
+      fill(p.color[0], p.color[1], p.color[2], p.alpha);
+      ellipse(p.x, p.y, p.size);
+    }
+  }
+  dustParticles = dustParticles.filter(p => p.alpha > 0);
+}
+
+function drawTargetIndicator(target) {
+  noFill();
+  let ac = currentDino.accentColor;
+  let pulseSize = 18 + sin(frameCount * 4) * 5;
+  stroke(ac[0], ac[1], ac[2], 35);
+  strokeWeight(1.5);
+  ellipse(target.x, target.y, pulseSize);
+  stroke(ac[0], ac[1], ac[2], 15);
+  ellipse(target.x, target.y, pulseSize + 15);
+}
+
+// =============== DINO DRAWINGS ===============
+function drawGenericDino(x, y, legAngle, distToCursor) {
+  let bc = currentDino.bodyColor;
+  let ac = currentDino.accentColor;
+  let dc = currentDino.darkColor;
+  let blc = currentDino.bellyColor;
+  let sc = currentDino.spikeColor;
+  let breathe = sin(frameCount * 3) * 1.5;
+  let isRex = currentDino.bgTheme === 'volcano';
+
+  noStroke();
+
+  // Shadow
+  fill(0, 0, 0, 50);
+  ellipse(x, y + 28, 70, 12);
+
+  // Tail
+  let tailWag = sin(frameCount * 6) * 10;
+  stroke(dc[0], dc[1], dc[2]);
+  strokeWeight(isRex ? 8 : 6);
+  noFill();
+  bezier(x - 40, y, x - 60, y - 5, x - 70, y - 15 + tailWag, x - 85, y - 10 + tailWag);
+  if (isRex) {
+    // T-Rex spiky tail tip
+    strokeWeight(5);
+    stroke(sc[0], sc[1], sc[2]);
+    bezier(x - 80, y - 10 + tailWag, x - 90, y - 20 + tailWag, x - 95, y - 5 + tailWag, x - 100, y - 15 + tailWag);
+  }
+  noStroke();
+
+  // Legs behind
+  drawLeg(x - 15, y + 18, -legAngle, dc, isRex);
+  drawLeg(x + 10, y + 18, legAngle, dc, isRex);
+
+  // Body glow
+  fill(ac[0], ac[1], ac[2], 25);
+  ellipse(x, y, 90 + breathe, 46 + breathe);
+  // Main body
+  fill(bc[0], bc[1], bc[2]);
+  ellipse(x, y, 80 + breathe, 40 + breathe);
+  // Belly
+  fill(blc[0], blc[1], blc[2]);
+  ellipse(x + 5, y + 5, 50, 22);
+
+  // Scales
+  fill(dc[0], dc[1], dc[2], 100);
+  ellipse(x - 15, y - 8, 8, 8);
+  ellipse(x + 5, y - 12, 6, 6);
+  ellipse(x + 20, y - 6, 5, 5);
+
+  // Legs front
+  drawLeg(x - 8, y + 18, legAngle, bc, isRex);
+  drawLeg(x + 18, y + 18, -legAngle, bc, isRex);
+
+  // Spikes
+  fill(sc[0], sc[1], sc[2]);
+  for (let i = -3; i <= 2; i++) {
+    let sx = x + i * 12;
+    let sh = (isRex ? 12 : 8) + sin(frameCount * 4 + i * 40) * 2;
+    triangle(sx - 4, y - 18, sx, y - 18 - sh, sx + 4, y - 18);
+  }
+
+  // Head
+  let headSize = isRex ? 42 : 36;
+  fill(ac[0], ac[1], ac[2], 20);
+  ellipse(x + 42, y - 14, headSize + 6, headSize - 2);
+  fill(bc[0] + 5, bc[1] + 10, bc[2] + 10);
+  ellipse(x + 42, y - 14, headSize, headSize - 6);
+
+  // Snout
+  fill(bc[0] + 10, bc[1] + 20, bc[2] + 20);
+  ellipse(x + 56, y - 10, 20, 16);
+
+  // T-Rex teeth
+  if (isRex) {
+    fill(255, 255, 240);
+    for (let t = 0; t < 4; t++) {
+      triangle(x + 50 + t * 5, y - 4, x + 52 + t * 5, y + 3, x + 48 + t * 5, y + 3);
+    }
+  }
+
+  // Nostril
+  fill(dc[0], dc[1], dc[2]);
+  ellipse(x + 63, y - 12, 3, 3);
+
+  // Mouth
+  stroke(dc[0], dc[1], dc[2]);
+  strokeWeight(1.5);
+  noFill();
+  arc(x + 56, y - 8, 16, 8, 0, 140);
+  noStroke();
+
+  // Eye
+  fill(255);
+  ellipse(x + 44, y - 18, 14, 14);
+  let eyeLookX = constrain(map(distToCursor, 0, 300, 0, 3), -3, 3);
+  fill(isRex ? [200, 50, 30] : [30, 30, 30]);
+  ellipse(x + 44 + eyeLookX, y - 18, isRex ? 10 : 8, 9);
+  fill(255);
+  ellipse(x + 45 + eyeLookX, y - 19, 3, 3);
+
+  // Eye glow when close
+  if (distToCursor < 80) {
+    fill(ac[0], ac[1], ac[2], 50);
+    ellipse(x + 44, y - 18, 18, 18);
+  }
+
+  // Cheek
+  if (!isRex) {
+    fill(255, 120, 100, 35);
+    ellipse(x + 50, y - 6, 10, 6);
+  }
+}
+
+function drawTriceratops(x, y, legAngle, distToCursor) {
+  let bc = currentDino.bodyColor;
+  let ac = currentDino.accentColor;
+  let dc = currentDino.darkColor;
+  let blc = currentDino.bellyColor;
+  let breathe = sin(frameCount * 3) * 1.5;
+
+  noStroke();
+
+  // Shadow
+  fill(0, 0, 0, 50);
+  ellipse(x, y + 30, 90, 14);
+
+  // Short tail
+  stroke(dc[0], dc[1], dc[2]);
+  strokeWeight(8);
+  noFill();
+  let tw = sin(frameCount * 5) * 6;
+  bezier(x - 45, y, x - 55, y + tw, x - 65, y - 5 + tw, x - 70, y + tw);
+  noStroke();
+
+  // Legs behind
+  drawLeg(x - 20, y + 20, -legAngle, dc, false);
+  drawLeg(x + 15, y + 20, legAngle, dc, false);
+
+  // Body (wider, sturdier)
+  fill(ac[0], ac[1], ac[2], 20);
+  ellipse(x, y, 100 + breathe, 52 + breathe);
+  fill(bc[0], bc[1], bc[2]);
+  ellipse(x, y, 90 + breathe, 46 + breathe);
+  fill(blc[0], blc[1], blc[2]);
+  ellipse(x + 5, y + 8, 55, 22);
+
+  // Legs front
+  drawLeg(x - 12, y + 20, legAngle, bc, false);
+  drawLeg(x + 22, y + 20, -legAngle, bc, false);
+
+  // Frill (shield behind head)
+  fill(ac[0] - 20, ac[1] - 20, ac[2] - 20);
+  ellipse(x + 35, y - 22, 40, 45);
+  // Frill dots
+  fill(ac[0] + 30, ac[1] + 30, ac[2] + 30, 100);
+  for (let i = 0; i < 5; i++) {
+    let angle = -60 + i * 30;
+    let fx = x + 35 + cos(angle) * 14;
+    let fy = y - 22 + sin(angle) * 18;
+    ellipse(fx, fy, 5, 5);
+  }
+
+  // Head
+  fill(bc[0] + 10, bc[1] + 10, bc[2] + 10);
+  ellipse(x + 48, y - 10, 32, 28);
+
+  // HORNS!
+  fill(230, 220, 190);
+  // Top horn
+  triangle(x + 50, y - 28, x + 53, y - 45, x + 56, y - 28);
+  // Two lower horns
+  triangle(x + 60, y - 16, x + 76, y - 24, x + 62, y - 10);
+  triangle(x + 60, y - 4, x + 76, y + 2, x + 62, y + 2);
+
+  // Eye
+  fill(255);
+  ellipse(x + 48, y - 14, 12, 12);
+  let eyeLookX = constrain(map(distToCursor, 0, 300, 0, 3), -3, 3);
+  fill(40, 60, 120);
+  ellipse(x + 48 + eyeLookX, y - 14, 7, 8);
+  fill(255);
+  ellipse(x + 49 + eyeLookX, y - 15, 3, 3);
+
+  if (distToCursor < 80) {
+    fill(ac[0], ac[1], ac[2], 50);
+    ellipse(x + 48, y - 14, 16, 16);
+  }
+
+  // Beak
+  fill(200, 190, 160);
+  triangle(x + 60, y - 6, x + 72, y - 4, x + 60, y + 2);
+}
+
+function drawPterodactyl(x, y, distToCursor) {
+  let bc = currentDino.bodyColor;
+  let ac = currentDino.accentColor;
+  let dc = currentDino.darkColor;
+  let blc = currentDino.bellyColor;
+
+  let flapAngle = sin(frameCount * 6) * 30;
+
+  noStroke();
+
+  // Shadow on ground
+  fill(0, 0, 0, 20);
+  ellipse(x, height * .82, 60 + flapAngle, 10);
+
+  // Wings
   push();
-  translate(x - 20, y + 25);
-  rotate(legAngle);
-  rect(0, 0, 10, 30);
+  // Left wing
+  fill(bc[0], bc[1], bc[2], 200);
+  translate(x - 10, y);
+  rotate(-flapAngle);
+  beginShape();
+  vertex(0, 0);
+  vertex(-80, -20);
+  vertex(-100, 10);
+  vertex(-60, 5);
+  vertex(0, 8);
+  endShape(CLOSE);
+  // Wing membrane detail
+  stroke(dc[0], dc[1], dc[2], 60);
+  strokeWeight(1);
+  line(0, 2, -60, -8);
+  line(0, 4, -70, 0);
+  noStroke();
   pop();
 
-  // front-right
   push();
-  translate(x + 0, y + 25);
-  rotate(-legAngle);
-  rect(0, 0, 10, 30);
+  // Right wing
+  fill(bc[0], bc[1], bc[2], 200);
+  translate(x + 10, y);
+  rotate(flapAngle);
+  beginShape();
+  vertex(0, 0);
+  vertex(80, -20);
+  vertex(100, 10);
+  vertex(60, 5);
+  vertex(0, 8);
+  endShape(CLOSE);
+  stroke(dc[0], dc[1], dc[2], 60);
+  strokeWeight(1);
+  line(0, 2, 60, -8);
+  line(0, 4, 70, 0);
+  noStroke();
   pop();
 
-  // back-left
-  push();
-  translate(x - 10, y + 25);
-  rotate(-legAngle);
-  rect(0, 0, 12, 35);
-  pop();
+  // Body
+  fill(bc[0] + 10, bc[1] + 10, bc[2] + 10);
+  ellipse(x, y, 30, 40);
+  fill(blc[0], blc[1], blc[2]);
+  ellipse(x, y + 5, 18, 22);
 
-  // back-right
+  // Head
+  fill(bc[0] + 15, bc[1] + 15, bc[2] + 15);
+  ellipse(x + 5, y - 24, 20, 18);
+
+  // Crest
+  fill(ac[0], ac[1], ac[2]);
+  triangle(x, y - 30, x - 5, y - 50, x + 15, y - 28);
+
+  // Beak
+  fill(220, 180, 100);
+  triangle(x + 12, y - 26, x + 30, y - 22, x + 12, y - 20);
+
+  // Eye
+  fill(255);
+  ellipse(x + 6, y - 26, 8, 8);
+  let eyeLookX = constrain(map(distToCursor, 0, 300, 0, 2), -2, 2);
+  fill(80, 40, 120);
+  ellipse(x + 6 + eyeLookX, y - 26, 5, 6);
+  fill(255);
+  ellipse(x + 7 + eyeLookX, y - 27, 2, 2);
+
+  if (distToCursor < 80) {
+    fill(ac[0], ac[1], ac[2], 50);
+    ellipse(x + 6, y - 26, 14, 14);
+  }
+
+  // Feet (dangling)
+  let dangle = sin(frameCount * 4) * 5;
+  stroke(dc[0], dc[1], dc[2]);
+  strokeWeight(2);
+  line(x - 5, y + 18, x - 8, y + 30 + dangle);
+  line(x + 5, y + 18, x + 8, y + 30 - dangle);
+  // Claws
+  noStroke();
+  fill(220, 180, 100);
+  ellipse(x - 8, y + 31 + dangle, 6, 4);
+  ellipse(x + 8, y + 31 - dangle, 6, 4);
+}
+
+function drawLeg(lx, ly, angle, col, big) {
   push();
-  translate(x + 10, y + 25);
-  rotate(legAngle);
-  rect(0, 0, 12, 35);
+  translate(lx, ly);
+  rotate(angle);
+  noStroke();
+  fill(col[0], col[1], col[2]);
+  rect(-5, 0, big ? 12 : 10, big ? 22 : 18, 4);
+  fill(col[0] - 10, col[1] - 10, col[2] - 10);
+  rect(-4, big ? 20 : 16, big ? 10 : 8, big ? 14 : 12, 3);
+  fill(col[0] + 20, col[1] + 30, col[2] + 10);
+  ellipse(1, big ? 36 : 30, big ? 16 : 14, big ? 10 : 8);
+  // Claws (for T-Rex)
+  if (big) {
+    fill(220, 210, 180);
+    ellipse(-3, big ? 38 : 32, 4, 3);
+    ellipse(1, big ? 39 : 33, 4, 3);
+    ellipse(5, big ? 38 : 32, 4, 3);
+  } else {
+    fill(col[0], col[1], col[2]);
+    ellipse(-3, 32, 5, 4);
+    ellipse(1, 33, 5, 4);
+    ellipse(5, 32, 5, 4);
+  }
   pop();
 }
 
+// =============== RESIZE ===============
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
+  if (currentDino) generateEnvironment();
 }
 </script>
 </body>
