@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Beats – Music Visualizer</title>
+    <meta name="description" content="A cosmic-themed music visualizer with frequency bars, waveforms, circular spectrum, and particle effects powered by Web Audio API.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Star field -->
+    <div class="starfield" id="starfield"></div>
+
+    <!-- Canvas -->
+    <canvas id="vizCanvas"></canvas>
+
+    <!-- ====== UPLOAD PANEL (shown when no track loaded) ====== -->
+    <div class="upload-panel" id="uploadPanel">
+        <div class="upload-card" id="dropZone">
+            <div class="brand">
+                <div class="brand-icon">🎵</div>
+                <h1 class="brand-title">COSMIC<span>BEATS</span></h1>
+                <p class="brand-sub">Drop your music into the cosmos</p>
+            </div>
+            <div class="drop-area">
+                <p class="drop-text">🎧 Drag & Drop audio file here</p>
+                <p class="drop-or">or</p>
+                <label class="btn-upload" for="fileInput">📂 Browse Files</label>
+                <input type="file" id="fileInput" accept="audio/*" hidden>
+                <p class="drop-hint">Supports MP3, WAV, OGG, FLAC</p>
+            </div>
+            <button class="btn-demo" onclick="loadDemo()">✨ Try Demo Track</button>
+        </div>
+    </div>
+
+    <!-- ====== CONTROLS BAR ====== -->
+    <div class="controls-bar hidden" id="controlsBar">
+        <button class="btn-ctrl" id="btnPlay" onclick="togglePlay()">▶</button>
+        <div class="track-info">
+            <span class="track-name" id="trackName">No track loaded</span>
+            <div class="progress-wrap" id="progressWrap">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+        <div class="volume-wrap">
+            <span class="vol-icon">🔊</span>
+            <input type="range" id="volumeSlider" min="0" max="100" value="80" class="slider">
+        </div>
+        <div class="viz-modes" id="vizModes">
+            <button class="mode-btn active" onclick="setMode(0,this)" title="Bars">▐▐▐</button>
+            <button class="mode-btn" onclick="setMode(1,this)" title="Wave">〰️</button>
+            <button class="mode-btn" onclick="setMode(2,this)" title="Circular">◎</button>
+            <button class="mode-btn" onclick="setMode(3,this)" title="Particles">✦</button>
+        </div>
+        <button class="btn-ctrl btn-new" onclick="showUpload()" title="New track">📂</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
