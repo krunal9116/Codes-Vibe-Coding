@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mystic Match – Memory Card Game</title>
+    <meta name="description" content="A beautiful memory card matching game with enchanted themes, difficulty levels, and star ratings.">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sparkle particles background -->
+    <div class="sparkles" id="sparkles"></div>
+
+    <!-- ====== MENU SCREEN ====== -->
+    <div class="screen active" id="menuScreen">
+        <div class="menu-card">
+            <div class="brand">
+                <div class="brand-icon">🃏</div>
+                <h1 class="brand-title">Mystic <span>Match</span></h1>
+                <p class="brand-sub">Flip · Remember · Conquer</p>
+            </div>
+
+            <div class="picker-section">
+                <span class="picker-label">Choose Theme</span>
+                <div class="theme-btns" id="themeBtns">
+                    <button class="theme-btn active" onclick="pickTheme(0,this)" title="Nature">🌿</button>
+                    <button class="theme-btn" onclick="pickTheme(1,this)" title="Food">🍕</button>
+                    <button class="theme-btn" onclick="pickTheme(2,this)" title="Space">🚀</button>
+                    <button class="theme-btn" onclick="pickTheme(3,this)" title="Animals">🐾</button>
+                </div>
+            </div>
+
+            <div class="picker-section">
+                <span class="picker-label">Difficulty</span>
+                <div class="diff-btns" id="diffBtns">
+                    <button class="diff-btn active" onclick="pickDiff(0,this)">Easy<small>4×3</small></button>
+                    <button class="diff-btn" onclick="pickDiff(1,this)">Medium<small>4×4</small></button>
+                    <button class="diff-btn" onclick="pickDiff(2,this)">Hard<small>5×4</small></button>
+                </div>
+            </div>
+
+            <button class="btn-play" id="btnPlay" onclick="startGame()">
+                ✦ Begin Quest ✦
+            </button>
+
+            <div class="best-times" id="bestTimes">
+                <span class="best-label">⏱ Best Times</span>
+                <div class="best-row"><span>Easy</span><span id="bestEasy">—</span></div>
+                <div class="best-row"><span>Medium</span><span id="bestMedium">—</span></div>
+                <div class="best-row"><span>Hard</span><span id="bestHard">—</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== GAME SCREEN ====== -->
+    <div class="screen" id="gameScreen">
+        <div class="game-topbar">
+            <div class="stat"><span class="stat-icon">⏱</span><span class="stat-val" id="timerVal">0:00</span></div>
+            <div class="stat"><span class="stat-icon">🔄</span><span class="stat-val" id="movesVal">0</span><span class="stat-lbl">moves</span></div>
+            <div class="stat"><span class="stat-icon">✦</span><span class="stat-val" id="matchesVal">0 / 0</span></div>
+            <button class="btn-pause" onclick="pauseGame()" title="Pause (Esc)">⏸</button>
+        </div>
+        <div class="grid-wrap">
+            <div class="card-grid" id="cardGrid"></div>
+        </div>
+    </div>
+
+    <!-- ====== WIN OVERLAY ====== -->
+    <div class="overlay" id="winOverlay">
+        <div class="overlay-card">
+            <div class="ov-icon">🏆</div>
+            <h2 class="ov-title">Quest Complete!</h2>
+            <div class="stars" id="starDisplay">⭐⭐⭐</div>
+            <div class="win-stats">
+                <div class="ws-item"><span class="ws-lbl">Time</span><span class="ws-val" id="winTime">0:00</span></div>
+                <div class="ws-item"><span class="ws-lbl">Moves</span><span class="ws-val" id="winMoves">0</span></div>
+            </div>
+            <div class="new-best hidden" id="newBest">✦ New Best Time! ✦</div>
+            <button class="btn-play btn-again" onclick="startGame()">🔄 Play Again</button>
+            <button class="btn-secondary" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <!-- ====== PAUSE OVERLAY ====== -->
+    <div class="overlay" id="pauseOverlay">
+        <div class="overlay-card">
+            <div class="ov-icon">⏸️</div>
+            <h2 class="ov-title">Paused</h2>
+            <button class="btn-play btn-again" onclick="resumeGame()">▶ Resume</button>
+            <button class="btn-secondary" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
