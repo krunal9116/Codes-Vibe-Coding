@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Weather Dashboard — 3D city skyline with real-time weather animations, forecasts, and immersive visuals.">
+    <title>Weather Dashboard — 3D City</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Sky Background -->
+    <div id="sky-bg"></div>
+
+    <!-- Stars (night) -->
+    <div id="stars-container"></div>
+
+    <!-- Sun / Moon -->
+    <div id="celestial-body">
+        <div id="sun">
+            <div class="sun-core"></div>
+            <div class="sun-rays"></div>
+        </div>
+        <div id="moon">
+            <div class="moon-surface"></div>
+            <div class="moon-crater c1"></div>
+            <div class="moon-crater c2"></div>
+            <div class="moon-crater c3"></div>
+        </div>
+    </div>
+
+    <!-- Cloud Layer -->
+    <div id="clouds-container"></div>
+
+    <!-- Weather Particles Canvas (rain, snow, etc.) -->
+    <canvas id="weather-canvas"></canvas>
+
+    <!-- Lightning Flash Overlay -->
+    <div id="lightning-flash"></div>
+
+    <!-- Fog Overlay -->
+    <div id="fog-overlay">
+        <div class="fog-layer fog-1"></div>
+        <div class="fog-layer fog-2"></div>
+        <div class="fog-layer fog-3"></div>
+    </div>
+
+    <!-- 3D City Skyline -->
+    <div id="city-container">
+        <div id="city-scene">
+            <div id="city-ground"></div>
+            <div id="city-reflection"></div>
+            <div id="buildings-container"></div>
+        </div>
+    </div>
+
+    <!-- Dashboard UI -->
+    <div id="dashboard">
+        <!-- Search Bar -->
+        <div id="search-section">
+            <div id="search-box">
+                <svg id="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="M21 21l-4.35-4.35"/>
+                </svg>
+                <input type="text" id="city-input" placeholder="Search any city..." autocomplete="off">
+                <button id="search-btn" aria-label="Search city weather">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+            <button id="locate-btn" aria-label="Use my location" title="Use my location">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Current Weather Card -->
+        <div id="current-weather" class="glass-card">
+            <div id="weather-main">
+                <div id="weather-left">
+                    <div id="city-name">—</div>
+                    <div id="weather-date">—</div>
+                    <div id="temperature">
+                        <span id="temp-value">--</span>
+                        <span id="temp-unit">°C</span>
+                    </div>
+                    <div id="weather-desc">—</div>
+                </div>
+                <div id="weather-right">
+                    <div id="weather-icon-3d">
+                        <canvas id="icon-canvas" width="120" height="120"></canvas>
+                    </div>
+                    <div id="feels-like">Feels like <span id="feels-temp">--</span>°</div>
+                </div>
+            </div>
+            <div id="weather-details">
+                <div class="detail-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+                    <div class="detail-info">
+                        <span class="detail-label">Humidity</span>
+                        <span class="detail-value" id="humidity">--%</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
+                    <div class="detail-info">
+                        <span class="detail-label">Wind</span>
+                        <span class="detail-value" id="wind">-- km/h</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <div class="detail-info">
+                        <span class="detail-label">Visibility</span>
+                        <span class="detail-value" id="visibility">-- km</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 12h18"/><circle cx="12" cy="12" r="9"/></svg>
+                    <div class="detail-info">
+                        <span class="detail-label">Pressure</span>
+                        <span class="detail-value" id="pressure">-- hPa</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sunrise/Sunset -->
+        <div id="sun-tracker" class="glass-card">
+            <h3>☀️ Sun Tracker</h3>
+            <div id="sun-arc">
+                <svg id="sun-arc-svg" viewBox="0 0 300 150">
+                    <path id="arc-path" d="M 20 140 Q 150 -40 280 140" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-dasharray="6,4"/>
+                    <circle id="arc-sun" cx="150" cy="50" r="8" fill="#FFD93D"/>
+                    <line x1="20" y1="140" x2="280" y2="140" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                </svg>
+            </div>
+            <div id="sun-times">
+                <div class="sun-time">
+                    <span class="sun-label">🌅 Sunrise</span>
+                    <span class="sun-value" id="sunrise-time">--:--</span>
+                </div>
+                <div class="sun-time">
+                    <span class="sun-label">🌇 Sunset</span>
+                    <span class="sun-value" id="sunset-time">--:--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5-Day Forecast -->
+        <div id="forecast-section" class="glass-card">
+            <h3>📅 5-Day Forecast</h3>
+            <div id="forecast-cards"></div>
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader">
+            <div class="loader-city">
+                <div class="loader-building lb1"></div>
+                <div class="loader-building lb2"></div>
+                <div class="loader-building lb3"></div>
+                <div class="loader-building lb4"></div>
+                <div class="loader-building lb5"></div>
+            </div>
+            <div class="loader-text">Loading Weather...</div>
+        </div>
+    </div>
+
+    <!-- Error Toast -->
+    <div id="error-toast" class="hidden">
+        <span id="error-msg"></span>
+        <button id="error-close" aria-label="Close error">&times;</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
