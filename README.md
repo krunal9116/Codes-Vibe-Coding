@@ -38,4 +38,5 @@ NOTE:- A collection of browser-based games & projects built entirely through AI-
 _**Tech Stack: HTML5 · CSS3 · JavaScript · Web Audio API · Canvas API**_
 
 
-
+10) ☁ Weather Dashboard:- An immersive, real-time weather dashboard. It features a dynamically generated 3D city skyline that reacts visually to live weather data from any city in the world. Just search the city you want to and know it's weather.
+_**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
