@@ -29,3 +29,8 @@ NOTE:- All is codes/projects are vibe-coded/made with AI. This helps me make my 
 
 7) 🏃‍♂️ Endless-Runner:-A endless runner set in a sunset savanna with parallax scrolling, day/night sky cycle, dynamic obstacles, coin                          collection, and increasing speed. Run, jump, duck — survive as long as you can!
                       _**Tech Stack: HTML5 · CSS3 · JavaScript · Canvas API**_
+
+
+8) 🐹 Garden Smash:- A cheerful garden-themed game with 3 cartoon mole types (normal, angry, golden), combo multipliers, timed 30-                           second rounds, 3 difficulty levels, accuracy tracking, and star ratings. Smash moles, chain combos, beat your high                      score!
+                     _**Tech Stack: HTML5 · CSS3 · JavaScript · Canvas API**_
+
