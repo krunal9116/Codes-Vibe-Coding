@@ -1,6 +1,6 @@
 This Repository has all the Vibe-Coded Projects/Games in it.
 
-NOTE:- All is codes/projects are vibe-coded/made with AI. This helps me make my prompting stronger on every project/game i make with AI.
+NOTE:- A collection of browser-based games built entirely through AI-assisted prompting — showcasing iterative prompt engineering,             real-time debugging, and design refinement skills.
 
 `To Play these Games/Project Just download it and run the index.html file it in your Browser🚀.`
 
