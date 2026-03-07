@@ -2,7 +2,7 @@ This Repository has all the Vibe-Coded Projects/Games in it.
 
 NOTE:- All is codes/projects are vibe-coded/made with AI. This helps me make my prompting stronger on every project/game i make with AI.
 
-`To Play these Games/Project Just download it and run it in your Browser🚀.`
+`To Play these Games/Project Just download it and run the **index.html** it in your Browser🚀.`
 
 1) 🎯 Tic-Tac-Toe:-  A premium Tic-Tac-Toe game with two modes: VS Friend (local 2-player) and VS Computer (unbeatable minimax AI).                          Features a dark neon UI, animated win line, confetti on victory, board shake on loss/draw, and a persistent                             scoreboard.
                      **_Tech-Stack:-HTML, CSS, JS._**
