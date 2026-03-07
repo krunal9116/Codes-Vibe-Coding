@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brick Breaker – Neon Blitz</title>
+    <meta name="description" content="A vibrant brick breaker game with power-ups, combos, and stunning particle effects.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ====== MENU SCREEN ====== -->
+    <div class="screen active" id="menuScreen">
+        <div class="menu-wrap">
+            <div class="brand">
+                <div class="brand-icon">🧱</div>
+                <h1 class="brand-title">BRICK<span>BREAKER</span></h1>
+                <p class="brand-sub">Smash • Combo • Conquer</p>
+            </div>
+
+            <button class="btn-start" onclick="startGame()">
+                <span class="btn-glow"></span>
+                ▶ START GAME
+            </button>
+
+            <div class="level-picker">
+                <span class="picker-label">Starting Level</span>
+                <div class="picker-btns">
+                    <button class="lvl-btn active" onclick="pickLevel(1,this)">1</button>
+                    <button class="lvl-btn" onclick="pickLevel(2,this)">2</button>
+                    <button class="lvl-btn" onclick="pickLevel(3,this)">3</button>
+                    <button class="lvl-btn" onclick="pickLevel(4,this)">4</button>
+                    <button class="lvl-btn" onclick="pickLevel(5,this)">5</button>
+                </div>
+            </div>
+
+            <div class="menu-score-box">
+                <span class="msb-label">🏆 Best Score</span>
+                <span class="msb-value" id="menuBest">0</span>
+            </div>
+
+            <p class="hint-text">🖱️ Move mouse / touch to control paddle &nbsp; | &nbsp; ⏸️ Press Esc to pause</p>
+        </div>
+    </div>
+
+    <!-- ====== GAME SCREEN ====== -->
+    <div class="screen" id="gameScreen">
+        <div class="game-hud">
+            <div class="hud-item"><span class="hud-lbl">Score</span><span class="hud-v" id="hudScore">0</span></div>
+            <div class="hud-item hud-mid"><span class="hud-lbl">Level</span><span class="hud-v" id="hudLevel">1</span></div>
+            <div class="hud-item"><span class="hud-lbl">Lives</span><span class="hud-v" id="hudLives">❤️❤️❤️</span></div>
+        </div>
+        <div class="combo-popup" id="comboPopup"></div>
+        <canvas id="gameCanvas"></canvas>
+        <div class="power-indicator" id="powerInd"></div>
+    </div>
+
+    <!-- ====== LEVEL COMPLETE OVERLAY ====== -->
+    <div class="overlay" id="levelOverlay">
+        <div class="overlay-card">
+            <div class="ov-emoji">🎉</div>
+            <h2 class="ov-title level-title">Level Complete!</h2>
+            <p class="ov-sub" id="levelMsg">Get ready for the next challenge</p>
+            <button class="btn-start btn-next" onclick="nextLevel()">NEXT LEVEL →</button>
+        </div>
+    </div>
+
+    <!-- ====== GAME OVER OVERLAY ====== -->
+    <div class="overlay" id="gameOverOverlay">
+        <div class="overlay-card">
+            <div class="ov-emoji" id="goEmoji">💀</div>
+            <h2 class="ov-title go-title" id="goTitle">Game Over</h2>
+            <div class="score-row">
+                <div class="sr-box"><span class="sr-lbl">Score</span><span class="sr-val" id="goScore">0</span></div>
+                <div class="sr-box"><span class="sr-lbl">Best</span><span class="sr-val sr-best" id="goBest">0</span></div>
+            </div>
+            <div class="new-record hidden" id="newRecord">🎉 NEW RECORD!</div>
+            <button class="btn-start btn-next" onclick="startGame()">🔄 PLAY AGAIN</button>
+            <button class="btn-menu" onclick="goToMenu()">Main Menu</button>
+            <div class="lb-section">
+                <h3 class="lb-heading">🏆 Top Scores</h3>
+                <ol class="lb-list" id="lbList"></ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== PAUSE OVERLAY ====== -->
+    <div class="overlay" id="pauseOverlay">
+        <div class="overlay-card">
+            <div class="ov-emoji">⏸️</div>
+            <h2 class="ov-title">Paused</h2>
+            <button class="btn-start btn-next" onclick="resumeGame()">▶ RESUME</button>
+            <button class="btn-menu" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <!-- ====== WIN OVERLAY ====== -->
+    <div class="overlay" id="winOverlay">
+        <div class="overlay-card">
+            <div class="ov-emoji">🏆</div>
+            <h2 class="ov-title win-title">YOU WIN!</h2>
+            <p class="ov-sub">All levels cleared — you're a legend!</p>
+            <div class="score-row">
+                <div class="sr-box"><span class="sr-lbl">Final Score</span><span class="sr-val" id="winScore">0</span></div>
+            </div>
+            <button class="btn-start btn-next" onclick="startGame()">🔄 PLAY AGAIN</button>
+            <button class="btn-menu" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
