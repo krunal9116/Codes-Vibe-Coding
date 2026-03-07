@@ -34,3 +34,8 @@ NOTE:- A collection of browser-based games built entirely through AI-assisted pr
 8) 🐹 Garden Smash:- A cheerful garden-themed game with 3 cartoon mole types (normal, angry, golden), combo multipliers, timed 30-                           second rounds, 3 difficulty levels, accuracy tracking, and star ratings. Smash moles, chain combos, beat your high                      score!
                      _**Tech Stack: HTML5 · CSS3 · JavaScript · Canvas API**_
 
+9) 🎵 Music Visualizer:- A real-time music visualizer powered by Web Audio API and Canvas. Upload any audio file and watch it come alive with 4 reactive visualization modes — frequency bars with mirror reflections, layered waveforms, circular radial spectrum, and beat-driven particle explosions. Features drag & drop upload, playback controls, volume slider, and a cosmic aurora-themed UI.
+_**Tech Stack: HTML5 · CSS3 · JavaScript · Web Audio API · Canvas API**_
+
+
+
