@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shadow Sprint – Endless Runner</title>
+    <meta name="description" content="A silhouette-style endless runner set in a sunset savanna with parallax layers, day/night cycle, and dynamic obstacles.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ====== MENU SCREEN ====== -->
+    <div class="screen active" id="menuScreen">
+        <div class="menu-card">
+            <div class="brand">
+                <div class="brand-icon">🏃</div>
+                <h1 class="brand-title">SHADOW<span>SPRINT</span></h1>
+                <p class="brand-sub">Run · Jump · Survive</p>
+            </div>
+
+            <button class="btn-play" id="btnPlay" onclick="startGame()">
+                ▶ START RUN
+            </button>
+
+            <div class="best-box">
+                <div class="best-row"><span>🏆 Best Score</span><span id="menuBest">0</span></div>
+                <div class="best-row"><span>📏 Best Distance</span><span id="menuDist">0m</span></div>
+            </div>
+
+            <p class="hint-text">
+                ⬆️ Space / Up / Tap — Jump &nbsp;|&nbsp; ⬇️ Down — Duck &nbsp;|&nbsp; Esc — Pause
+            </p>
+        </div>
+    </div>
+
+    <!-- ====== GAME SCREEN ====== -->
+    <div class="screen" id="gameScreen">
+        <canvas id="gameCanvas"></canvas>
+        <div class="game-hud">
+            <div class="hud-item"><span class="hud-lbl">Score</span><span class="hud-v" id="hudScore">0</span></div>
+            <div class="hud-item"><span class="hud-lbl">Distance</span><span class="hud-v" id="hudDist">0m</span></div>
+            <div class="hud-item"><span class="hud-lbl">Coins</span><span class="hud-v" id="hudCoins">🪙 0</span></div>
+        </div>
+    </div>
+
+    <!-- ====== GAME OVER OVERLAY ====== -->
+    <div class="overlay" id="gameOverOverlay">
+        <div class="overlay-card">
+            <div class="ov-icon">💀</div>
+            <h2 class="ov-title">Run Over!</h2>
+            <div class="go-stats">
+                <div class="gs-item"><span class="gs-lbl">Score</span><span class="gs-val" id="goScore">0</span></div>
+                <div class="gs-item"><span class="gs-lbl">Distance</span><span class="gs-val" id="goDist">0m</span></div>
+                <div class="gs-item"><span class="gs-lbl">Coins</span><span class="gs-val" id="goCoins">0</span></div>
+            </div>
+            <div class="new-record hidden" id="newRecord">🏆 NEW RECORD!</div>
+            <button class="btn-play btn-again" onclick="startGame()">🔄 Run Again</button>
+            <button class="btn-secondary" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <!-- ====== PAUSE OVERLAY ====== -->
+    <div class="overlay" id="pauseOverlay">
+        <div class="overlay-card">
+            <div class="ov-icon">⏸️</div>
+            <h2 class="ov-title">Paused</h2>
+            <button class="btn-play btn-again" onclick="resumeGame()">▶ Resume</button>
+            <button class="btn-secondary" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
