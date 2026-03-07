@@ -24,3 +24,7 @@ NOTE:- All is codes/projects are vibe-coded/made with AI. This helps me make my 
                       _**Tech Stack: HTML5 · CSS3 · JavaScript · Canvas API**_
 
 
+6) 🃏 Mystic Match – Memory Card Game:- A mystical-themed memory card matching game with 4 emoji themes (Nature, Food, Space, Animals),                      3 difficulty levels, 3D card flip animations, timer, move counter, star ratings, and localStorage best times.                           Flip, match, and conquer!
+                     _**Tech Stack: HTML5 · CSS3 · JavaScript**_
+
+
