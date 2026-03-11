@@ -40,3 +40,7 @@ _**Tech Stack: HTML5 · CSS3 · JavaScript · Web Audio API · Canvas API**_
 
 10) ☁ Weather Dashboard:- An immersive, real-time weather dashboard. It features a dynamically generated 3D city skyline that reacts visually to live weather data from any city in the world. Just search the city you want to and know it's weather.
 _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
+
+
+11) 👨‍💻 DSA Visualizer:- An interactive, animated Data Structures & Algorithms Visualizer. Watch sorting and searching algorithms come to life with beautiful bar and node animations, step-by-step explanations, and real-time statistics.
+_**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
