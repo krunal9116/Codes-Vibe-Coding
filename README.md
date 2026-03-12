@@ -44,3 +44,8 @@ _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 
 11) 👨‍💻 DSA Visualizer:- An interactive, animated Data Structures & Algorithms Visualizer. Watch sorting and searching algorithms come to life with beautiful bar and node animations, step-by-step explanations, and real-time statistics.
 _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
+
+
+12) 🕒 Age Calculator:- Calculates exact age in years/months/days. Shows how many days are left for the next birthday and many more things. Animated UI + confetti._**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
+
+13) 🎵 Instrument-Studio:- Virtual Instruments with keyboard controls. Multiple instruments like Piano, Flute, Drum & Trumpet. With beautiful animations and UI._**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
