@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>✨ Age Calculator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Floating particles background -->
+  <div class="particles" id="particles"></div>
+
+  <div class="container" id="mainContainer">
+    <!-- Header -->
+    <div class="header">
+      <div class="icon-bounce">🎂</div>
+      <h1>Age Calculator</h1>
+      <p class="subtitle">Discover your exact age & countdown to your next birthday!</p>
+    </div>
+
+    <!-- Input Section -->
+    <div class="input-section">
+      <label for="birthdate">Enter your Date of Birth</label>
+      <div class="input-wrapper">
+        <span class="input-icon">📅</span>
+        <input type="date" id="birthdate" />
+      </div>
+      <button id="calculateBtn" onclick="calculateAge()">
+        <span class="btn-text">Calculate My Age</span>
+        <span class="btn-icon">🚀</span>
+      </button>
+    </div>
+
+    <!-- Results Section (hidden initially) -->
+    <div class="results-section" id="results">
+      <!-- Age Display -->
+      <div class="age-display" id="ageDisplay">
+        <h2>Your Age</h2>
+        <div class="age-cards">
+          <div class="age-card" id="yearsCard">
+            <span class="age-number" id="years">0</span>
+            <span class="age-label">Years</span>
+          </div>
+          <div class="age-card" id="monthsCard">
+            <span class="age-number" id="months">0</span>
+            <span class="age-label">Months</span>
+          </div>
+          <div class="age-card" id="daysCard">
+            <span class="age-number" id="days">0</span>
+            <span class="age-label">Days</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fun Stats -->
+      <div class="fun-stats" id="funStats">
+        <h2>⚡ Fun Stats</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-icon">📆</span>
+            <span class="stat-value" id="totalDays">0</span>
+            <span class="stat-label">Total Days Lived</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">⏰</span>
+            <span class="stat-value" id="totalHours">0</span>
+            <span class="stat-label">Total Hours</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">💓</span>
+            <span class="stat-value" id="heartbeats">0</span>
+            <span class="stat-label">Heartbeats</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">🌙</span>
+            <span class="stat-value" id="sleepDays">0</span>
+            <span class="stat-label">Days Sleeping</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Birthday Countdown -->
+      <div class="birthday-countdown" id="birthdayCountdown">
+        <h2>🎉 Next Birthday Countdown</h2>
+        <div class="countdown-wrapper">
+          <div class="countdown-ring">
+            <svg viewBox="0 0 200 200">
+              <circle class="ring-bg" cx="100" cy="100" r="90" />
+              <circle class="ring-progress" id="ringProgress" cx="100" cy="100" r="90" />
+            </svg>
+            <div class="countdown-center">
+              <span class="countdown-number" id="daysLeft">0</span>
+              <span class="countdown-label">days left</span>
+            </div>
+          </div>
+          <div class="countdown-details">
+            <div class="detail-row">
+              <span>🎂 Next Birthday</span>
+              <span id="nextBirthdayDate">--</span>
+            </div>
+            <div class="detail-row">
+              <span>🎈 Turning</span>
+              <span id="turningAge">--</span>
+            </div>
+            <div class="detail-row">
+              <span>📅 Day of Week</span>
+              <span id="birthdayDay">--</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confetti Canvas -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <script src="script.js"></script>
+</body>
+</html>
