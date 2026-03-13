@@ -52,3 +52,6 @@ _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 
 
 14) 📱 Calculator:- A Modern Scientific Calculator. It features a standard calculator with a slide-out scientific panel offering 25+ functions including trig, logarithms, roots, and constants. Gives full keyboard support and smooth animations._**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
+
+
+15) 🎨 Drawing-Board:- In Drawing-Board you can draw freely with Brush, Pencil, Marker, or Spray — pick any color, adjust size and opacity. Drop in shapes (rectangle, circle, triangle, line), fill areas with the paint bucket, pick colors from the canvas with the eyedropper, and type text in any font. Erase mistakes, undo/redo up to 40 steps, zoom in/out with the scroll wheel, and export your drawing as a PNG when done._**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
