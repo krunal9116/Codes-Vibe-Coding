@@ -49,3 +49,6 @@ _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 12) 🕒 Age Calculator:- Calculates exact age in years/months/days. Shows how many days are left for the next birthday and many more things. Animated UI + confetti._**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 
 13) 🎵 Instrument-Studio:- Virtual Instruments with keyboard controls. Multiple instruments like Piano, Flute, Drum & Trumpet. With beautiful animations and UI._**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
+
+
+14) 📱 Calculator:- A Modern Scientific Calculator. It features a standard calculator with a slide-out scientific panel offering 25+ functions including trig, logarithms, roots, and constants. Gives full keyboard support and smooth animations._**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
