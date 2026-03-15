@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Shooter — Cosmic Fury</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ====== MENU SCREEN ====== -->
+    <div class="screen active" id="menuScreen">
+        <div class="menu-stars" id="menuStars"></div>
+        <div class="menu-wrap">
+            <div class="title-block">
+                <div class="title-sub">🚀 COSMIC FURY</div>
+                <h1 class="game-title">SPACE<br><span>SHOOTER</span></h1>
+                <p class="title-tagline">Survive the Infinite Void</p>
+            </div>
+
+            <div class="menu-stats">
+                <div class="stat-box">
+                    <span class="stat-label">BEST SCORE</span>
+                    <span class="stat-value" id="menuBest">0</span>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="startGame()">
+                <span class="btn-glow-ring"></span>
+                ▶ LAUNCH MISSION
+            </button>
+
+            <div class="controls-hint">
+                <div class="hint-row"><kbd>WASD</kbd> / <kbd>↑↓←→</kbd> Move Ship &nbsp;|&nbsp; <kbd>1-4</kbd> Switch Weapons</div>
+                <div class="hint-row"><kbd>B</kbd> Use Bomb &nbsp;|&nbsp; <kbd>ESC</kbd> Pause</div>
+            </div>
+
+            <div class="weapon-preview">
+                <div class="wp-title">WEAPONS ARSENAL</div>
+                <div class="wp-list">
+                    <div class="wp-item" style="--wc:#00eeff"><span class="wp-key">1</span>LASER</div>
+                    <div class="wp-item" style="--wc:#00ff88"><span class="wp-key">2</span>SPREAD</div>
+                    <div class="wp-item" style="--wc:#ff00ff"><span class="wp-key">3</span>PLASMA</div>
+                    <div class="wp-item" style="--wc:#ff8800"><span class="wp-key">4</span>MISSILES</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== GAME CANVAS ====== -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- ====== LEVEL COMPLETE OVERLAY ====== -->
+    <div class="overlay" id="levelOverlay">
+        <div class="overlay-card">
+            <div class="ov-particles" id="lvlParticles"></div>
+            <div class="ov-icon">🌟</div>
+            <h2 class="ov-title glow-green">WAVE <span id="levelCompleteWave">1</span> CLEARED!</h2>
+            <p class="ov-sub">Mission Accomplished</p>
+            <div class="score-display">
+                <span class="sd-label">SCORE</span>
+                <span class="sd-val" id="levelCompleteScore">0</span>
+            </div>
+            <button class="btn-primary btn-sm" onclick="nextWave()">NEXT WAVE →</button>
+            <button class="btn-ghost" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <!-- ====== GAME OVER OVERLAY ====== -->
+    <div class="overlay" id="gameOverOverlay">
+        <div class="overlay-card">
+            <div class="ov-icon">💀</div>
+            <h2 class="ov-title glow-red">GAME OVER</h2>
+            <div class="score-row">
+                <div class="sr-box">
+                    <span class="sr-lbl">SCORE</span>
+                    <span class="sr-val" id="goScore">0</span>
+                </div>
+                <div class="sr-box">
+                    <span class="sr-lbl">BEST</span>
+                    <span class="sr-val sr-gold" id="goBest">0</span>
+                </div>
+            </div>
+            <div class="new-record" id="newRecord" style="display:none">🏆 NEW RECORD!</div>
+            <button class="btn-primary btn-sm" onclick="startGame()">🔄 RETRY</button>
+            <button class="btn-ghost" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <!-- ====== WIN OVERLAY ====== -->
+    <div class="overlay" id="winOverlay">
+        <div class="overlay-card">
+            <div class="ov-icon">🏆</div>
+            <h2 class="ov-title glow-gold">MISSION COMPLETE!</h2>
+            <p class="ov-sub">You saved the galaxy!</p>
+            <div class="score-display">
+                <span class="sd-label">FINAL SCORE</span>
+                <span class="sd-val" id="winScore">0</span>
+            </div>
+            <button class="btn-primary btn-sm" onclick="startGame()">🔄 PLAY AGAIN</button>
+            <button class="btn-ghost" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <!-- ====== PAUSE OVERLAY ====== -->
+    <div class="overlay" id="pauseOverlay">
+        <div class="overlay-card overlay-slim">
+            <div class="ov-icon">⏸️</div>
+            <h2 class="ov-title">PAUSED</h2>
+            <button class="btn-primary btn-sm" onclick="resumeGame()">▶ RESUME</button>
+            <button class="btn-ghost" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
