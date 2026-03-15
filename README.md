@@ -55,3 +55,6 @@ _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 
 
 15) 🎨 Drawing-Board:- In Drawing-Board you can draw freely with Brush, Pencil, Marker, or Spray — pick any color, adjust size and opacity. Drop in shapes (rectangle, circle, triangle, line), fill areas with the paint bucket, pick colors from the canvas with the eyedropper, and type text in any font. Erase mistakes, undo/redo up to 40 steps, zoom in/out with the scroll wheel, and export your drawing as a PNG when done._**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
+
+
+16) 🔫 Space Shooter:- A lone spaceship pilot fighting through waves of alien enemies in deep space. Blast through scouts, heavy warships, stealth fighters, and kamikaze drones — then face a massive multi-phase boss trying to destroy you with a death laser._**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
