@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>2048 — Neon Synthwave</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@300;400;600;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Scanlines overlay -->
+    <div class="scanlines"></div>
+
+    <!-- Ambient grid lines (synthwave horizon) -->
+    <div class="horizon">
+        <div class="horizon-grid"></div>
+    </div>
+
+    <!-- Floating neon orbs -->
+    <div class="orbs" id="orbs"></div>
+
+    <!-- ══ HEADER ══ -->
+    <header class="header">
+        <div class="logo">
+            <span class="logo-num">20</span><span class="logo-num hi">48</span>
+        </div>
+        <div class="scores">
+            <div class="score-box" id="scoreBox">
+                <span class="score-lbl">SCORE</span>
+                <span class="score-val" id="scoreVal">0</span>
+                <div class="score-delta" id="scoreDelta"></div>
+            </div>
+            <div class="score-box best">
+                <span class="score-lbl">BEST</span>
+                <span class="score-val" id="bestVal">0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ══ CONTROLS ══ -->
+    <div class="controls">
+        <button class="btn-ctrl" onclick="newGame()" title="New Game">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            NEW
+        </button>
+        <button class="btn-ctrl" onclick="undoMove()" id="btnUndo" title="Undo">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 14 4 9 9 4"/><path d="M20 20v-7a4 4 0 0 0-4-4H4"/></svg>
+            UNDO
+        </button>
+        <div class="hint-text">Use <kbd>↑↓←→</kbd> or swipe</div>
+    </div>
+
+    <!-- ══ GRID ══ -->
+    <div class="grid-wrap">
+        <div class="grid-bg" id="gridBg"></div>
+        <div class="grid-tiles" id="gridTiles"></div>
+    </div>
+
+    <!-- ══ OVERLAY: WIN ══ -->
+    <div class="overlay" id="winOverlay">
+        <div class="overlay-card">
+            <div class="ov-glow"></div>
+            <div class="ov-icon">🏆</div>
+            <h2 class="ov-title rainbow">YOU REACHED 2048!</h2>
+            <p class="ov-sub">Legendary. Keep going?</p>
+            <div class="ov-btns">
+                <button class="btn-neon" onclick="continueGame()">KEEP GOING</button>
+                <button class="btn-neon btn-dim" onclick="newGame()">NEW GAME</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ OVERLAY: GAME OVER ══ -->
+    <div class="overlay" id="overOverlay">
+        <div class="overlay-card">
+            <div class="ov-icon">💀</div>
+            <h2 class="ov-title" style="color:#ff2255;text-shadow:0 0 20px #ff2255">GAME OVER</h2>
+            <p class="ov-sub">No more moves available</p>
+            <div class="final-score">
+                <span class="fs-lbl">FINAL SCORE</span>
+                <span class="fs-val" id="finalScore">0</span>
+            </div>
+            <button class="btn-neon" onclick="newGame()">TRY AGAIN</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
