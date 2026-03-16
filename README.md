@@ -58,3 +58,5 @@ _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 
 
 16) 🔫 Space Shooter:- A lone spaceship pilot fighting through waves of alien enemies in deep space. Blast through scouts, heavy warships, stealth fighters, and kamikaze drones — then face a massive multi-phase boss trying to destroy you with a death laser._**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
+
+17) 🧩 2048 — Neon Synthwave:- Slide glowing tiles across a 4×4 grid in a retro 80s synthwave world. When two tiles with the same number collide, they merge into one — keep merging to reach the legendary 2048 tile. One wrong move could fill the board and end your run, so every swipe counts. How high can you go?_**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
