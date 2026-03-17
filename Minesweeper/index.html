@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minesweeper — Deep Abyss</title>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Ambient bubbles -->
+    <div class="bubbles" id="bubbles"></div>
+    <!-- Caustic light rays -->
+    <div class="caustics" id="caustics"></div>
+
+    <!-- ══ MENU ══ -->
+    <div class="screen active" id="menuScreen">
+        <div class="menu-wrap">
+            <div class="menu-icon">💣</div>
+            <h1 class="menu-title">MINE<span>SWEEPER</span></h1>
+            <p class="menu-sub">Deep Abyss Edition</p>
+
+            <div class="diff-grid">
+                <button class="diff-btn active" data-diff="easy"   onclick="selectDiff('easy',   this)">
+                    <span class="diff-icon">🐠</span>
+                    <span class="diff-name">EASY</span>
+                    <span class="diff-info">9 × 9 · 10 mines</span>
+                </button>
+                <button class="diff-btn" data-diff="medium" onclick="selectDiff('medium', this)">
+                    <span class="diff-icon">🦑</span>
+                    <span class="diff-name">MEDIUM</span>
+                    <span class="diff-info">16 × 16 · 40 mines</span>
+                </button>
+                <button class="diff-btn" data-diff="hard"   onclick="selectDiff('hard',   this)">
+                    <span class="diff-icon">🦈</span>
+                    <span class="diff-name">HARD</span>
+                    <span class="diff-info">30 × 16 · 99 mines</span>
+                </button>
+            </div>
+
+            <div class="best-times" id="bestTimes"></div>
+
+            <button class="btn-dive" onclick="startGame()">
+                <span class="btn-ripple"></span>
+                🌊 DIVE IN
+            </button>
+
+            <p class="menu-hint">Left-click to reveal · Right-click to flag</p>
+        </div>
+    </div>
+
+    <!-- ══ GAME SCREEN ══ -->
+    <div class="screen" id="gameScreen">
+
+        <!-- HUD: All buttons, no navbar background, all buttons semi-transparent -->
+        <div class="hud hud-float">
+            <button class="hud-btn" onclick="goToMenu()">← MENU</button>
+            <div class="hud-center">
+                <div class="hud-mines">
+                    <span class="hud-icon">💣</span>
+                    <span class="hud-val" id="mineCount">0</span>
+                </div>
+                <button class="hud-face" id="faceBtn" onclick="restartGame()" title="Restart">🤿</button>
+                <div class="hud-timer">
+                    <span class="hud-icon">⏱</span>
+                    <span class="hud-val mono" id="timer">000</span>
+                </div>
+            </div>
+            <div class="hud-diff" id="hudDiff">EASY</div>
+        </div>
+
+        <!-- Grid container centered -->
+        <div class="grid-outer center-outer" id="gridOuter">
+            <div class="grid" id="grid"></div>
+        </div>
+
+    </div>
+
+    <!-- ══ WIN OVERLAY ══ -->
+    <div class="overlay" id="winOverlay">
+        <div class="overlay-card">
+            <div class="ov-icon">🏆</div>
+            <h2 class="ov-title win">AREA CLEARED!</h2>
+            <p class="ov-sub">All mines avoided</p>
+            <div class="result-stats">
+                <div class="rs-item"><span class="rs-lbl">TIME</span><span class="rs-val mono" id="winTime">0s</span></div>
+                <div class="rs-item"><span class="rs-lbl">BEST</span><span class="rs-val mono gold" id="winBest">—</span></div>
+            </div>
+            <div class="new-record" id="newRecord" style="display:none">🎉 NEW BEST TIME!</div>
+            <div class="ov-btns">
+                <button class="btn-ov" onclick="restartGame()">↺ PLAY AGAIN</button>
+                <button class="btn-ov btn-dim" onclick="goToMenu()">MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ LOSE OVERLAY ══ -->
+    <div class="overlay" id="loseOverlay">
+        <div class="overlay-card">
+            <div class="ov-icon">💥</div>
+            <h2 class="ov-title lose">KABOOM!</h2>
+            <p class="ov-sub">You hit a mine</p>
+            <div class="ov-btns">
+                <button class="btn-ov" onclick="restartGame()">↺ TRY AGAIN</button>
+                <button class="btn-ov btn-dim" onclick="goToMenu()">MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
