@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Flap – Cyberpunk Flappy Bird</title>
+    <meta name="description" content="A stunning neon Flappy Bird clone with physics, parallax pipes, difficulty scaling, and dazzling particle effects.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ====== MENU SCREEN ====== -->
+    <div class="screen active" id="menuScreen">
+        <div class="menu-wrap">
+            <div class="brand">
+                <div class="brand-icon">🐦</div>
+                <h1 class="brand-title">NEON<span>FLAP</span></h1>
+                <p class="brand-sub">Flap • Dodge • Survive</p>
+            </div>
+
+            <!-- Difficulty Selection -->
+            <div class="diff-picker" id="diffPicker">
+                <span class="picker-label">Difficulty</span>
+                <div class="picker-btns">
+                    <button class="diff-btn" id="diffEasy" onclick="pickDiff('easy', this)">🌱 Easy</button>
+                    <button class="diff-btn active" id="diffMedium" onclick="pickDiff('medium', this)">⚡ Medium</button>
+                    <button class="diff-btn" id="diffHard" onclick="pickDiff('hard', this)">🔥 Hard</button>
+                </div>
+            </div>
+
+            <button class="btn-start" id="btnStart" onclick="startGame()">
+                <span class="btn-glow"></span>
+                ▶ START GAME
+            </button>
+
+            <div class="menu-score-box">
+                <span class="msb-label">🏆 Best Score</span>
+                <span class="msb-value" id="menuBest">0</span>
+            </div>
+
+            <div class="controls-hint">
+                <p class="hint-text">🖱️ Click / Space / ↑ to Flap &nbsp; | &nbsp; ⏸️ Esc to Pause</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== GAME SCREEN ====== -->
+    <div class="screen" id="gameScreen">
+        <div class="game-hud">
+            <div class="hud-player hud-left">
+                <span class="hud-lbl">Score</span>
+                <span class="hud-v hud-score-cyan" id="hudScore">0</span>
+            </div>
+            <div class="hud-center">
+                <span class="hud-diff" id="hudDiff">MEDIUM</span>
+                <span class="hud-speed" id="hudSpeed">Speed ×1.0</span>
+            </div>
+            <div class="hud-player hud-right">
+                <span class="hud-lbl">Best</span>
+                <span class="hud-v hud-score-gold" id="hudBest">0</span>
+            </div>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+        <div class="score-popup" id="scorePopup"></div>
+    </div>
+
+    <!-- ====== COUNTDOWN OVERLAY ====== -->
+    <div class="overlay" id="countdownOverlay">
+        <div class="countdown-num" id="countdownNum">3</div>
+    </div>
+
+    <!-- ====== GAME OVER OVERLAY ====== -->
+    <div class="overlay" id="gameOverOverlay">
+        <div class="overlay-card">
+            <div class="ov-emoji" id="goEmoji">💀</div>
+            <h2 class="ov-title go-title" id="goTitle">Game Over</h2>
+            <div class="medal-row" id="medalRow">
+                <span class="medal-icon" id="medalIcon">🥉</span>
+                <span class="medal-text" id="medalText">Bronze Flapper</span>
+            </div>
+            <div class="score-row">
+                <div class="sr-box">
+                    <span class="sr-lbl">Score</span>
+                    <span class="sr-val sr-cyan" id="goScore">0</span>
+                </div>
+                <div class="sr-box">
+                    <span class="sr-lbl">Best</span>
+                    <span class="sr-val sr-gold" id="goBest">0</span>
+                </div>
+            </div>
+            <div class="stats-row">
+                <div class="stat-item">
+                    <span class="stat-val" id="goPipes">0</span>
+                    <span class="stat-lbl">Pipes</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-val" id="goTime">0s</span>
+                    <span class="stat-lbl">Time</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-val" id="goMaxSpeed">×1.0</span>
+                    <span class="stat-lbl">Max Speed</span>
+                </div>
+            </div>
+            <button class="btn-start btn-next" onclick="startGame()">🔄 PLAY AGAIN</button>
+            <button class="btn-menu" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <!-- ====== PAUSE OVERLAY ====== -->
+    <div class="overlay" id="pauseOverlay">
+        <div class="overlay-card">
+            <div class="ov-emoji">⏸️</div>
+            <h2 class="ov-title">Paused</h2>
+            <button class="btn-start btn-next" onclick="resumeGame()">▶ RESUME</button>
+            <button class="btn-menu" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <!-- ====== NEW BEST OVERLAY ====== -->
+    <div class="new-best-flash" id="newBestFlash">🎉 NEW BEST!</div>
+
+    <script src="game.js"></script>
+</body>
+</html>
