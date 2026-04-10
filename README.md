@@ -69,3 +69,6 @@ _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 
 
 20) 🌌 Particle Universe:- A **Must Try** jaw-dropping, mouse-interactive particle universe with real-time physics, mind-blowing visual effects, and buttery-smooth 60fps animations. 6 mouse interaction modes, 7 visual themes, explosions, shockwaves & wormholes. _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
+
+
+21) 🐦 Neon Flap:— A cyberpunk-styled Flappy Bird clone with realistic bird rendering, parallax cityscape, difficulty scaling, particle explosions & medal system. _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
