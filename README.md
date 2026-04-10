@@ -66,3 +66,6 @@ _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 
 
 19) 💣 Minesweeper:- This is a bioluminescent underwater-themed take on the classic mine-sweeping puzzle. Players choose from three difficulty levels — Easy (9×9), Medium (16×16), or Hard (30×16) — and must clear the board without triggering any hidden mines. The first click is always safe, and opening an empty zone cascades a ripple-reveal across connected cells. Right-click cycles a flag on any unrevealed cell. Double-clicking a numbered cell chords all unflagged neighbors when the flag count matches. Hitting a mine triggers a particle explosion and fans out a mine-reveal wave across the board. Best times per difficulty are saved locally. _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
+
+
+20) 🌌 Particle Universe:- A jaw-dropping, mouse-interactive particle universe with real-time physics, mind-blowing visual effects, and buttery-smooth 60fps animations. 6 mouse interaction modes, 7 visual themes, explosions, shockwaves & wormholes **(Must Try)** _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
