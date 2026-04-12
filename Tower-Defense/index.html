@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Bastion – Tower Defense</title>
+    <meta name="description" content="A stunning sci-fi tower defense game with 5 tower types, upgrade system, 30 enemy waves, and dazzling particle effects. Built with HTML + JS + Canvas.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ====== MENU SCREEN ====== -->
+    <div class="screen active" id="menuScreen">
+        <div class="menu-bg-canvas-wrap">
+            <canvas id="menuBgCanvas"></canvas>
+        </div>
+        <div class="menu-wrap">
+            <div class="brand">
+                <div class="brand-icon">⚔️</div>
+                <h1 class="brand-title">TOWER<span>DEFENSE</span></h1>
+                <p class="brand-sub">Build • Defend • Survive</p>
+            </div>
+
+            <div class="diff-picker" id="diffPicker">
+                <span class="picker-label">Difficulty</span>
+                <div class="picker-btns">
+                    <button class="diff-btn" id="diffEasy" onclick="pickDiff('easy', this)">🌱 Easy</button>
+                    <button class="diff-btn active" id="diffMedium" onclick="pickDiff('medium', this)">⚡ Medium</button>
+                    <button class="diff-btn" id="diffHard" onclick="pickDiff('hard', this)">🔥 Hard</button>
+                </div>
+            </div>
+
+            <button class="btn-start" id="btnStart" onclick="startGame()">
+                <span class="btn-glow"></span>
+                ▶ DEFEND THE BASE
+            </button>
+
+            <div class="menu-stats-row">
+                <div class="menu-score-box">
+                    <span class="msb-label">🏆 Best Wave</span>
+                    <span class="msb-value" id="menuBestWave">0</span>
+                </div>
+                <div class="menu-score-box">
+                    <span class="msb-label">⭐ Best Score</span>
+                    <span class="msb-value" id="menuBestScore">0</span>
+                </div>
+            </div>
+
+            <div class="controls-hint">
+                <p class="hint-text">🖱️ Click to place towers &nbsp;|&nbsp; 🔑 1-5 select tower &nbsp;|&nbsp; ⏸️ Esc to Pause</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== GAME SCREEN ====== -->
+    <div class="screen" id="gameScreen">
+        <!-- Top HUD -->
+        <div class="game-hud" id="gameHud">
+            <div class="hud-section hud-left">
+                <div class="hud-item">
+                    <span class="hud-icon">🌊</span>
+                    <span class="hud-lbl">Wave</span>
+                    <span class="hud-val" id="hudWave">0 / 30</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-icon">❤️</span>
+                    <span class="hud-lbl">Lives</span>
+                    <span class="hud-val hud-lives" id="hudLives">20</span>
+                </div>
+            </div>
+            <div class="hud-section hud-center">
+                <div class="hud-item">
+                    <span class="hud-icon">💰</span>
+                    <span class="hud-lbl">Gold</span>
+                    <span class="hud-val hud-gold" id="hudGold">200</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-icon">⭐</span>
+                    <span class="hud-lbl">Score</span>
+                    <span class="hud-val hud-score" id="hudScoreVal">0</span>
+                </div>
+            </div>
+            <div class="hud-section hud-right">
+                <div class="hud-speed-controls">
+                    <button class="speed-btn active" id="speed1" onclick="setSpeed(1)">×1</button>
+                    <button class="speed-btn" id="speed2" onclick="setSpeed(2)">×2</button>
+                    <button class="speed-btn" id="speed3" onclick="setSpeed(3)">×3</button>
+                </div>
+                <button class="hud-btn" id="pauseBtn" onclick="togglePause()">⏸️</button>
+            </div>
+        </div>
+
+        <!-- Main game area -->
+        <div class="game-body">
+            <canvas id="gameCanvas"></canvas>
+
+            <!-- Side Panel -->
+            <div class="side-panel" id="sidePanel">
+                <!-- Tower Shop -->
+                <div class="panel-section" id="towerShop">
+                    <h3 class="panel-title">🏗️ Towers</h3>
+                    <div class="tower-grid" id="towerGrid">
+                        <button class="tower-btn" id="towerBtn0" onclick="selectTowerType(0)" title="Blaster — Fast single target [Key: 1]">
+                            <span class="tb-icon">🔫</span>
+                            <span class="tb-name">Blaster</span>
+                            <span class="tb-cost">💰 100</span>
+                        </button>
+                        <button class="tower-btn" id="towerBtn1" onclick="selectTowerType(1)" title="Frost — Slows enemies [Key: 2]">
+                            <span class="tb-icon">🧊</span>
+                            <span class="tb-name">Frost</span>
+                            <span class="tb-cost">💰 125</span>
+                        </button>
+                        <button class="tower-btn" id="towerBtn2" onclick="selectTowerType(2)" title="Cannon — Splash damage [Key: 3]">
+                            <span class="tb-icon">💥</span>
+                            <span class="tb-name">Cannon</span>
+                            <span class="tb-cost">💰 150</span>
+                        </button>
+                        <button class="tower-btn" id="towerBtn3" onclick="selectTowerType(3)" title="Tesla — Chain lightning [Key: 4]">
+                            <span class="tb-icon">⚡</span>
+                            <span class="tb-name">Tesla</span>
+                            <span class="tb-cost">💰 175</span>
+                        </button>
+                        <button class="tower-btn" id="towerBtn4" onclick="selectTowerType(4)" title="Sniper — Long range, high damage [Key: 5]">
+                            <span class="tb-icon">☢️</span>
+                            <span class="tb-name">Sniper</span>
+                            <span class="tb-cost">💰 200</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Selected Tower Info -->
+                <div class="panel-section hidden" id="towerInfo">
+                    <h3 class="panel-title" id="infoTitle">Tower Info</h3>
+                    <div class="info-stats">
+                        <div class="info-row"><span class="ir-lbl">Damage</span><span class="ir-val" id="infoDmg">—</span></div>
+                        <div class="info-row"><span class="ir-lbl">Range</span><span class="ir-val" id="infoRange">—</span></div>
+                        <div class="info-row"><span class="ir-lbl">Speed</span><span class="ir-val" id="infoSpeed">—</span></div>
+                        <div class="info-row"><span class="ir-lbl">Tier</span><span class="ir-val" id="infoTier">—</span></div>
+                        <div class="info-row"><span class="ir-lbl">Kills</span><span class="ir-val" id="infoKills">—</span></div>
+                    </div>
+                    <div class="info-actions">
+                        <button class="action-btn btn-upgrade" id="btnUpgrade" onclick="upgradeTower()">
+                            ⬆️ Upgrade <span id="upgradeCost"></span>
+                        </button>
+                        <button class="action-btn btn-sell" id="btnSell" onclick="sellTower()">
+                            💰 Sell <span id="sellValue"></span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Wave Info -->
+                <div class="panel-section" id="wavePanel">
+                    <h3 class="panel-title">🌊 Next Wave</h3>
+                    <div class="wave-preview" id="wavePreview">
+                        <p class="wp-text">Ready to start!</p>
+                    </div>
+                    <button class="action-btn btn-wave" id="btnWave" onclick="sendWave()">
+                        ⚔️ Send Wave
+                    </button>
+                    <div class="wave-timer hidden" id="waveTimer">
+                        <span class="wt-lbl">Next wave in</span>
+                        <span class="wt-val" id="waveCountdown">15</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wave Announcement -->
+        <div class="wave-announce hidden" id="waveAnnounce">
+            <span class="wa-text" id="waText">WAVE 1</span>
+        </div>
+    </div>
+
+    <!-- ====== GAME OVER OVERLAY ====== -->
+    <div class="overlay" id="gameOverOverlay">
+        <div class="overlay-card">
+            <div class="ov-emoji" id="goEmoji">💀</div>
+            <h2 class="ov-title go-title" id="goTitle">Base Destroyed</h2>
+            <div class="score-row">
+                <div class="sr-box">
+                    <span class="sr-lbl">Wave</span>
+                    <span class="sr-val sr-cyan" id="goWave">0</span>
+                </div>
+                <div class="sr-box">
+                    <span class="sr-lbl">Score</span>
+                    <span class="sr-val sr-gold" id="goScore">0</span>
+                </div>
+            </div>
+            <div class="stats-row">
+                <div class="stat-item">
+                    <span class="stat-val" id="goKills">0</span>
+                    <span class="stat-lbl">Kills</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-val" id="goTowers">0</span>
+                    <span class="stat-lbl">Towers</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-val" id="goGoldEarned">0</span>
+                    <span class="stat-lbl">Gold Earned</span>
+                </div>
+            </div>
+            <button class="btn-start btn-next" onclick="startGame()">🔄 PLAY AGAIN</button>
+            <button class="btn-menu" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <!-- ====== VICTORY OVERLAY ====== -->
+    <div class="overlay" id="victoryOverlay">
+        <div class="overlay-card victory-card">
+            <div class="ov-emoji">🏆</div>
+            <h2 class="ov-title victory-title">VICTORY!</h2>
+            <p class="victory-sub">All 30 waves defeated!</p>
+            <div class="score-row">
+                <div class="sr-box">
+                    <span class="sr-lbl">Score</span>
+                    <span class="sr-val sr-gold" id="vicScore">0</span>
+                </div>
+                <div class="sr-box">
+                    <span class="sr-lbl">Lives Left</span>
+                    <span class="sr-val sr-cyan" id="vicLives">0</span>
+                </div>
+            </div>
+            <button class="btn-start btn-next" onclick="startGame()">🔄 PLAY AGAIN</button>
+            <button class="btn-menu" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <!-- ====== PAUSE OVERLAY ====== -->
+    <div class="overlay" id="pauseOverlay">
+        <div class="overlay-card">
+            <div class="ov-emoji">⏸️</div>
+            <h2 class="ov-title">Paused</h2>
+            <button class="btn-start btn-next" onclick="togglePause()">▶ RESUME</button>
+            <button class="btn-menu" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
