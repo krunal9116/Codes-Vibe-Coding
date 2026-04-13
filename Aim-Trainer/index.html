@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aim Trainer — Test your reflexes, track reaction time, accuracy stats, and compete on the leaderboard.">
+    <title>Aim Trainer — Reflex & Precision</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Particle / Crosshair Overlay -->
+    <canvas id="fx-canvas"></canvas>
+
+    <!-- ===================== MENU SCREEN ===================== -->
+    <div id="menu-screen" class="screen active">
+        <div class="menu-container">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 100 100" width="80" height="80">
+                        <circle cx="50" cy="50" r="44" fill="none" stroke="url(#logoGrad)" stroke-width="3"/>
+                        <circle cx="50" cy="50" r="30" fill="none" stroke="url(#logoGrad)" stroke-width="2" opacity="0.7"/>
+                        <circle cx="50" cy="50" r="16" fill="none" stroke="url(#logoGrad)" stroke-width="2" opacity="0.5"/>
+                        <circle cx="50" cy="50" r="5" fill="url(#logoGrad)"/>
+                        <line x1="50" y1="0" x2="50" y2="100" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4"/>
+                        <line x1="0" y1="50" x2="100" y2="50" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.4"/>
+                        <defs>
+                            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#00f0ff"/>
+                                <stop offset="100%" stop-color="#ff00aa"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <h1 class="game-title">AIM TRAINER</h1>
+                <p class="game-subtitle">Reflex & Precision</p>
+            </div>
+
+            <div class="mode-grid">
+                <button class="mode-card" data-mode="classic" id="btn-classic">
+                    <div class="mode-icon">🎯</div>
+                    <div class="mode-info">
+                        <h3>Classic</h3>
+                        <p>Standard targets, 30s rounds</p>
+                    </div>
+                    <div class="mode-badge">EASY</div>
+                </button>
+                <button class="mode-card" data-mode="precision" id="btn-precision">
+                    <div class="mode-icon">🔬</div>
+                    <div class="mode-info">
+                        <h3>Precision</h3>
+                        <p>Tiny targets, big rewards</p>
+                    </div>
+                    <div class="mode-badge">HARD</div>
+                </button>
+                <button class="mode-card" data-mode="speed" id="btn-speed">
+                    <div class="mode-icon">⚡</div>
+                    <div class="mode-info">
+                        <h3>Speed</h3>
+                        <p>Blink and you'll miss</p>
+                    </div>
+                    <div class="mode-badge">FAST</div>
+                </button>
+                <button class="mode-card" data-mode="flick" id="btn-flick">
+                    <div class="mode-icon">💥</div>
+                    <div class="mode-info">
+                        <h3>Flick Shot</h3>
+                        <p>Multiple targets at once</p>
+                    </div>
+                    <div class="mode-badge">MULTI</div>
+                </button>
+            </div>
+
+            <div class="menu-actions">
+                <button class="btn-secondary" id="btn-leaderboard">
+                    <span class="btn-icon">🏆</span> Leaderboard
+                </button>
+                <button class="btn-secondary" id="btn-settings">
+                    <span class="btn-icon">⚙️</span> Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== COUNTDOWN SCREEN ===================== -->
+    <div id="countdown-screen" class="screen">
+        <div class="countdown-container">
+            <div class="countdown-mode-label"></div>
+            <div class="countdown-number">3</div>
+            <div class="countdown-text">GET READY</div>
+        </div>
+    </div>
+
+    <!-- ===================== GAME SCREEN ===================== -->
+    <div id="game-screen" class="screen">
+        <!-- HUD -->
+        <div class="hud">
+            <div class="hud-left">
+                <div class="hud-item" id="hud-score">
+                    <span class="hud-label">SCORE</span>
+                    <span class="hud-value" id="score-value">0</span>
+                </div>
+                <div class="hud-item" id="hud-combo">
+                    <span class="hud-label">COMBO</span>
+                    <span class="hud-value" id="combo-value">0x</span>
+                </div>
+            </div>
+            <div class="hud-center">
+                <div class="timer-ring">
+                    <svg viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="6"/>
+                        <circle id="timer-circle" cx="60" cy="60" r="54" fill="none" stroke="url(#timerGrad)" stroke-width="6" stroke-linecap="round" stroke-dasharray="339.292" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+                        <defs>
+                            <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#00f0ff"/>
+                                <stop offset="100%" stop-color="#ff00aa"/>
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                    <span class="timer-text" id="timer-value">30</span>
+                </div>
+            </div>
+            <div class="hud-right">
+                <div class="hud-item">
+                    <span class="hud-label">HITS</span>
+                    <span class="hud-value" id="hits-value">0</span>
+                </div>
+                <div class="hud-item">
+                    <span class="hud-label">ACCURACY</span>
+                    <span class="hud-value" id="accuracy-value">—</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div id="game-area">
+            <!-- Targets are spawned here dynamically -->
+        </div>
+    </div>
+
+    <!-- ===================== RESULTS SCREEN ===================== -->
+    <div id="results-screen" class="screen">
+        <div class="results-container">
+            <div class="results-header">
+                <div class="results-medal" id="results-medal">🥇</div>
+                <h2 class="results-title">ROUND COMPLETE</h2>
+                <div class="results-mode" id="results-mode">Classic Mode</div>
+            </div>
+
+            <div class="results-score-big" id="results-score">0</div>
+            <div class="results-label">POINTS</div>
+
+            <div class="results-stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-value" id="stat-accuracy">0%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-value" id="stat-reaction">0ms</div>
+                    <div class="stat-label">Avg Reaction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="stat-combo">0x</div>
+                    <div class="stat-label">Best Combo</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💀</div>
+                    <div class="stat-value" id="stat-hits">0/0</div>
+                    <div class="stat-label">Hits / Misses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🏅</div>
+                    <div class="stat-value" id="stat-best-reaction">0ms</div>
+                    <div class="stat-label">Best Reaction</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="stat-rank">—</div>
+                    <div class="stat-label">Leaderboard</div>
+                </div>
+            </div>
+
+            <div class="results-actions">
+                <button class="btn-primary" id="btn-retry">
+                    <span class="btn-icon">🔄</span> Play Again
+                </button>
+                <button class="btn-secondary" id="btn-back-menu">
+                    <span class="btn-icon">🏠</span> Menu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== LEADERBOARD SCREEN ===================== -->
+    <div id="leaderboard-screen" class="screen">
+        <div class="leaderboard-container">
+            <h2 class="lb-title">🏆 LEADERBOARD</h2>
+
+            <div class="lb-tabs">
+                <button class="lb-tab active" data-tab="classic">Classic</button>
+                <button class="lb-tab" data-tab="precision">Precision</button>
+                <button class="lb-tab" data-tab="speed">Speed</button>
+                <button class="lb-tab" data-tab="flick">Flick Shot</button>
+            </div>
+
+            <div class="lb-table-wrap">
+                <table class="lb-table" id="lb-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Score</th>
+                            <th>Accuracy</th>
+                            <th>Avg RT</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lb-body">
+                        <!-- Rows injected by JS -->
+                    </tbody>
+                </table>
+                <div class="lb-empty" id="lb-empty">No records yet. Go play!</div>
+            </div>
+
+            <div class="lb-actions">
+                <button class="btn-secondary" id="btn-lb-back">
+                    <span class="btn-icon">←</span> Back
+                </button>
+                <button class="btn-danger" id="btn-lb-clear">
+                    <span class="btn-icon">🗑️</span> Clear All
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== SETTINGS SCREEN ===================== -->
+    <div id="settings-screen" class="screen">
+        <div class="settings-container">
+            <h2 class="settings-title">⚙️ SETTINGS</h2>
+
+            <div class="setting-group">
+                <label class="setting-label">Round Duration</label>
+                <div class="setting-options">
+                    <button class="setting-btn" data-duration="15">15s</button>
+                    <button class="setting-btn active" data-duration="30">30s</button>
+                    <button class="setting-btn" data-duration="60">60s</button>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label">Sound Effects</label>
+                <div class="setting-options">
+                    <button class="setting-btn active" data-sound="on">On</button>
+                    <button class="setting-btn" data-sound="off">Off</button>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label">Crosshair Style</label>
+                <div class="setting-options">
+                    <button class="setting-btn active" data-crosshair="cross">✛ Cross</button>
+                    <button class="setting-btn" data-crosshair="dot">● Dot</button>
+                    <button class="setting-btn" data-crosshair="circle">◎ Circle</button>
+                </div>
+            </div>
+
+            <div class="settings-actions">
+                <button class="btn-secondary" id="btn-settings-back">
+                    <span class="btn-icon">←</span> Back
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
