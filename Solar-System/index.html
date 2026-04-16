@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive Solar System simulation with realistic orbiting planets, zoom and pan controls, and detailed planet information.">
+    <title>Solar System — Interactive Simulation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="solarCanvas"></canvas>
+
+    <!-- Title overlay -->
+    <div id="titleOverlay">
+        <h1>🪐 Solar System</h1>
+        <p>Interactive Simulation</p>
+    </div>
+
+    <!-- Planet Info Card -->
+    <div id="planetInfo" class="hidden">
+        <button id="closeInfo" aria-label="Close info card">&times;</button>
+        <div id="planetHeader">
+            <div id="planetIcon"></div>
+            <div>
+                <h2 id="planetName">Earth</h2>
+                <span id="planetType">Terrestrial Planet</span>
+            </div>
+        </div>
+        <div id="planetStats">
+            <div class="stat">
+                <span class="stat-label">Diameter</span>
+                <span class="stat-value" id="statDiameter">—</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Distance from Sun</span>
+                <span class="stat-value" id="statDistance">—</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Orbital Period</span>
+                <span class="stat-value" id="statOrbitalPeriod">—</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Day Length</span>
+                <span class="stat-value" id="statDayLength">—</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Moons</span>
+                <span class="stat-value" id="statMoons">—</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Temperature</span>
+                <span class="stat-value" id="statTemp">—</span>
+            </div>
+        </div>
+        <p id="planetDescription"></p>
+    </div>
+
+    <!-- Controls Panel -->
+    <div id="controls">
+        <div class="control-group">
+            <label for="speedSlider">⏱ Speed</label>
+            <input type="range" id="speedSlider" min="0" max="500" value="100">
+            <span id="speedValue">1×</span>
+        </div>
+        <div class="control-group">
+            <label for="zoomSlider">🔍 Zoom</label>
+            <input type="range" id="zoomSlider" min="10" max="400" value="100">
+            <span id="zoomValue">1×</span>
+        </div>
+        <div class="control-toggles">
+            <button id="toggleOrbits" class="toggle-btn active" title="Toggle orbit lines">◎ Orbits</button>
+            <button id="toggleLabels" class="toggle-btn active" title="Toggle planet labels">𝐀 Labels</button>
+            <button id="toggleTrails" class="toggle-btn" title="Toggle planet trails">✦ Trails</button>
+            <button id="togglePause" class="toggle-btn" title="Pause/Resume">▶ Play</button>
+        </div>
+        <div class="control-toggles">
+            <button id="resetView" class="toggle-btn" title="Reset view to center">⟲ Reset</button>
+            <button id="toggleScale" class="toggle-btn" title="Toggle realistic/artistic scale">🔬 Scale</button>
+        </div>
+    </div>
+
+    <!-- Minimap -->
+    <div id="minimap">
+        <canvas id="minimapCanvas" width="180" height="180"></canvas>
+    </div>
+
+    
+   
+
+    <script src="script.js"></script>
+</body>
+</html>
