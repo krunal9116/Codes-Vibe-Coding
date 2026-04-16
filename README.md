@@ -81,3 +81,6 @@ _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 
 
 24) 🪐 Interactive Solar System Simulation:— Explore all 8 planets with realistic orbits, glowing Sun with corona rays, asteroid belt, zoom/pan camera, planet info cards with real data, orbital trails, and a minimap. _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
+
+
+25) 🏃‍♂️ Neon Dash — A premium 2D side-scrolling platformer with a fully animated human character, double jump, wall slide, 6 handcrafted levels, collectibles, enemies, parallax city backgrounds, and particle effects. _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
