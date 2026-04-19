@@ -4,6 +4,8 @@ NOTE:- A collection of browser-based games & projects built entirely through AI-
 
 `To Play these Games/Project Just download it and run the index.html file it in your Browser🚀.`
 
+*) 🚀 My personal developer portfolio:— vibe coded with pure HTML, CSS & JS. Features 20+ projects, interactive animations, particle effects & dynamic filtering.
+
 1) 🎯 Tic-Tac-Toe:-  A premium Tic-Tac-Toe game with two modes: VS Friend (local 2-player) and VS Computer (unbeatable minimax AI).                          Features a dark neon UI, animated win line, confetti on victory, board shake on loss/draw, and a persistent                             scoreboard.
                      **_Tech-Stack:-HTML, CSS, JS._**
 
