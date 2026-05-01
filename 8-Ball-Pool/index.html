@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>8-Ball Pool — Classic Billiards</title>
+    <meta name="description" content="A premium 8-Ball Pool game with realistic physics, AI opponent, cue control, spin, and 2-player local mode.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ====== MENU SCREEN ====== -->
+    <div class="screen active" id="menuScreen">
+        <div class="menu-wrap">
+            <div class="brand">
+                <div class="brand-icon">🎱</div>
+                <h1 class="brand-title">8-BALL <span>POOL</span></h1>
+                <p class="brand-sub">Rack · Aim · Sink</p>
+            </div>
+
+            <!-- Mode Selection -->
+            <div class="mode-picker">
+                <span class="picker-label">Game Mode</span>
+                <div class="picker-btns">
+                    <button class="mode-btn active" id="mode1P" onclick="pickMode('1P', this)">🤖 VS Computer</button>
+                    <button class="mode-btn" id="mode2P" onclick="pickMode('2P', this)">👥 2 Players</button>
+                </div>
+            </div>
+
+            <!-- Difficulty (1P only) -->
+            <div class="diff-picker" id="diffPicker">
+                <span class="picker-label">AI Difficulty</span>
+                <div class="picker-btns">
+                    <button class="diff-btn" onclick="pickDiff('easy', this)">Easy</button>
+                    <button class="diff-btn active" onclick="pickDiff('medium', this)">Medium</button>
+                    <button class="diff-btn" onclick="pickDiff('hard', this)">Hard</button>
+                </div>
+            </div>
+
+            <button class="btn-start" id="btnStart" onclick="startGame()">
+                <span class="btn-glow"></span>
+                ▶ BREAK
+            </button>
+
+            <div class="controls-hint" id="controlsHint">
+                <p class="hint-text">🖱️ Mouse to aim · Hold click for power · Release to shoot · Esc to pause</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== GAME SCREEN ====== -->
+    <div class="screen" id="gameScreen">
+        <div class="game-hud">
+            <div class="hud-player hud-p1 active-turn" id="hudP1">
+                <span class="hud-lbl" id="p1Label">Player 1</span>
+                <span class="hud-group" id="p1Group"></span>
+                <div class="hud-balls" id="p1Balls"></div>
+            </div>
+            <div class="hud-center">
+                <span class="hud-turn" id="hudTurn">Player 1's Turn</span>
+                <span class="hud-msg" id="hudMsg"></span>
+            </div>
+            <div class="hud-player hud-p2" id="hudP2">
+                <span class="hud-lbl" id="p2Label">CPU</span>
+                <span class="hud-group" id="p2Group"></span>
+                <div class="hud-balls" id="p2Balls"></div>
+            </div>
+        </div>
+
+        <div class="canvas-wrap" id="canvasWrap">
+            <canvas id="gameCanvas"></canvas>
+        </div>
+
+        <!-- Power Bar -->
+        <div class="power-bar hidden" id="powerBar">
+            <div class="power-track">
+                <div class="power-fill" id="powerFill"></div>
+            </div>
+            <span class="power-pct" id="powerPct">0%</span>
+        </div>
+
+        <!-- Spin Widget -->
+        <div class="spin-widget" id="spinWidget">
+            <span class="spin-title">SPIN</span>
+            <div class="spin-ball" id="spinBall">
+                <div class="spin-dot" id="spinDot"></div>
+            </div>
+            <button class="spin-reset" id="spinReset" onclick="resetSpin()">Reset</button>
+        </div>
+
+        <!-- Foul Popup -->
+        <div class="foul-popup hidden" id="foulPopup">FOUL!</div>
+
+        <!-- Message Popup -->
+        <div class="msg-popup hidden" id="msgPopup"></div>
+    </div>
+
+    <!-- ====== GAME OVER OVERLAY ====== -->
+    <div class="overlay" id="gameOverOverlay">
+        <div class="overlay-card">
+            <div class="ov-emoji" id="goEmoji">🏆</div>
+            <h2 class="ov-title" id="goTitle">Player 1 Wins!</h2>
+            <p class="ov-detail" id="goDetail"></p>
+            <button class="btn-start btn-next" onclick="startGame()">🔄 PLAY AGAIN</button>
+            <button class="btn-menu" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <!-- ====== PAUSE OVERLAY ====== -->
+    <div class="overlay" id="pauseOverlay">
+        <div class="overlay-card">
+            <div class="ov-emoji">⏸️</div>
+            <h2 class="ov-title">Paused</h2>
+            <button class="btn-start btn-next" onclick="resumeGame()">▶ RESUME</button>
+            <button class="btn-menu" onclick="goToMenu()">Main Menu</button>
+        </div>
+    </div>
+
+    <script src="engine.js"></script>
+    <script src="render.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
