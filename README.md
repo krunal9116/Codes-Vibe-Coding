@@ -81,7 +81,7 @@ _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 
 23) 🎯 AIM TRAINER:- A sleek, browser-based aim trainer with a dark neon aesthetic. Features 4 game modes (Classic, Precision, Speed, Flick Shot), a combo multiplier system, real-time reaction time tracking, accuracy stats, and a localStorage leaderboard _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 
-
+24) 🎱 8-Ball Pool:- It Features realistic billiards physics, elastic ball collisions, cue stick aiming with ghost ball prediction, power control, spin system, full 8-ball rules (fouls, ball-in-hand, group assignment), 3-difficulty AI opponent, and 2-player local mode — all wrapped in a classic dark green felt & red rail aesthetic. _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 24) 🪐 Interactive Solar System Simulation:— Explore all 8 planets with realistic orbits, glowing Sun with corona rays, asteroid belt, zoom/pan camera, planet info cards with real data, orbital trails, and a minimap. _**Tech Stack: HTML5, CSS3, Vanilla JavaScript**_
 
 
